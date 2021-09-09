@@ -1,5 +1,9 @@
 # Either
 
+[![Either CI](https://github.com/2bllw8/either/actions/workflows/main.yml/badge.svg)](https://github.com/2bllw8/either/actions/workflows/main.yml)
+[![](https://jitpack.io/v/2bllw8/either.svg)](https://jitpack.io/#2bllw8/either)
+
+
 Implementation of the `Either` type for Java 8+
 
 Either is a type that represents a value of 1 of 2 possible types (disjoint union).
@@ -16,7 +20,7 @@ allprojects {
 
 // Include pencil lib
 dependencies {
-    implementation 'com.github.2bllw8:either:SNAPSHOT'
+    implementation 'com.github.2bllw8:either:1.0.0'
 }
 ```
 
