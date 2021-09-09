@@ -4,7 +4,6 @@
  */
 package exe.bbllw8.either;
 
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -34,18 +33,18 @@ final class LeftEither<L, R> extends Either<L, R> {
 
     @Override
     public L getLeft() {
-        return left.orElseThrow(() -> new NoSuchElementException("No left value present"));
+        return left.orElseThrow(Either::noLeftValueException);
     }
 
     @Override
     public R getRight() {
-        throw new NoSuchElementException("No right value present");
+        throw noRightValueException();
     }
 
     @Override
     public <T> T either(Function<? super L, ? extends T> mapLeft,
                         Function<? super R, ? extends T> mapRight) {
-        return left.map(mapLeft).orElseThrow(() -> new NoSuchElementException("No left value present"));
+        return left.map(mapLeft).orElseThrow(Either::noLeftValueException);
     }
 
     @Override

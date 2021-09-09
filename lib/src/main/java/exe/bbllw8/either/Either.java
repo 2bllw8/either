@@ -6,6 +6,7 @@ package exe.bbllw8.either;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
  *
  * <code>null</code> values are not accepted and will throw exceptions
  * if used in an Either instance.
- *
+ * <p>
  * Construct an instance using one of:
  * <ul>
  *     <li>{@link #left(Object)}: instance with a left value</li>
@@ -33,7 +34,7 @@ public abstract class Either<L, R> {
 
     /**
      * Whether this either has a left value.
-     *
+     * <p>
      * If this is <code>true</code>, {@link #getRight()}
      * must be <code>false</code>.
      */
@@ -41,7 +42,7 @@ public abstract class Either<L, R> {
 
     /**
      * Whether this either has a right value.
-     *
+     * <p>
      * If this is <code>true</code>, {@link #getLeft()}
      * must be <code>false</code>.
      */
@@ -166,5 +167,13 @@ public abstract class Either<L, R> {
      */
     public static <T> T reduce(Either<T, T> either) {
         return Objects.requireNonNull(either).either(Function.identity(), Function.identity());
+    }
+
+    protected static NoSuchElementException noLeftValueException() {
+        return new NoSuchElementException("No left value present");
+    }
+
+    protected static NoSuchElementException noRightValueException() {
+        return new NoSuchElementException("No right value present");
     }
 }
