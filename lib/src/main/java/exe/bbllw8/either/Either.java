@@ -16,12 +16,12 @@ import java.util.stream.Collectors;
  * Represents a value of 1 of 2 possible types (disjoint union).
  *
  * <code>null</code> values are not accepted and will throw exceptions
- * if used in a Either instance.
+ * if used in an Either instance.
  *
  * Construct an instance using one of:
  * <ul>
- *     <li>{@link #left(L)}: instance with a left value</li>
- *     <li>{@link #left(L)}: instance with a left value</li>
+ *     <li>{@link #left(Object)}: instance with a left value</li>
+ *     <li>{@link #left(Object)}: instance with a left value</li>
  *     <li>{@link #iff(boolean, Supplier, Supplier)}: instance with a left or
  *         value depending on the value of a condition</li>
  * </ul>
