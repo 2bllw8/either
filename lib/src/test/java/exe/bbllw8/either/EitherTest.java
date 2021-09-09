@@ -22,6 +22,26 @@ public class EitherTest {
                 Either.<Integer, Integer>right(2).hashCode());
     }
 
+    @Test(expected = NullPointerException.class)
+    public void failOnLeftNull() {
+        Either.left(null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void failOnRightNull() {
+        Either.right(null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void failOnIffLeftNull() {
+        Either.iff(true, () -> null, () -> 1);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void failOnIffRightNull() {
+        Either.iff(false, () -> 0, () -> null);
+    }
+
     @Test
     public void consistentEquals() {
         //noinspection AssertBetweenInconvertibleTypes
