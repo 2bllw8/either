@@ -16,10 +16,17 @@ public class EitherTest {
                 Either.<Integer, Boolean>right(false));
         Assert.assertNotEquals(Either.<Integer, Boolean>left(2).hashCode(),
                 Either.<Integer, Boolean>right(false).hashCode());
+        Assert.assertNotEquals(Either.<Integer, Integer>left(2),
+                Either.<Integer, Integer>right(2));
+        Assert.assertNotEquals(Either.<Integer, Integer>left(2).hashCode(),
+                Either.<Integer, Integer>right(2).hashCode());
     }
 
     @Test
     public void consistentEquals() {
+        //noinspection AssertBetweenInconvertibleTypes
+        Assert.assertNotEquals(Either.<Integer, Boolean>left(2), 2);
+
         Assert.assertEquals(Either.<Integer, Boolean>left(2),
                 Either.<Integer, Boolean>left(2));
         Assert.assertEquals(Either.<Integer, Boolean>left(2).hashCode(),
@@ -52,5 +59,11 @@ public class EitherTest {
                         Either.left(2),
                         Either.right("2"),
                         Either.left(3))));
+    }
+
+    @Test
+    public void reduce() {
+        Assert.assertEquals("0", Either.reduce(Either.left("0")));
+        Assert.assertEquals("1", Either.reduce(Either.right("1")));
     }
 }
