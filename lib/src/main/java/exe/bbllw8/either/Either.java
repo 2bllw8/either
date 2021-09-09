@@ -94,7 +94,7 @@ public abstract class Either<L, R> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(isLeft() ? getLeft() : getRight());
+        return Objects.hash(isLeft() ? getLeft() : getRight(), isLeft());
     }
 
     @Override
