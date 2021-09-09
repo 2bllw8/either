@@ -18,7 +18,7 @@ allprojects {
     }
 }
 
-// Include pencil lib
+// Include the lib
 dependencies {
     implementation 'com.github.2bllw8:either:1.0.0'
 }
@@ -57,3 +57,7 @@ public class Main {
     }
 }
 ```
+
+### Javadoc
+
+Javadoc is available at [2bllw8.github.io/either](https://2bllw8.github.io/either)
