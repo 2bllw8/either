@@ -34,18 +34,18 @@ final class RightEither<L, R> extends Either<L, R> {
 
     @Override
     public L getLeft() {
-        throw new NoSuchElementException("There is no left value");
+        throw new NoSuchElementException("No left value present");
     }
 
     @Override
     public R getRight() {
-        return right.orElseThrow();
+        return right.orElseThrow(() -> new NoSuchElementException("No right value present"));
     }
 
     @Override
     public <T> T either(Function<? super L, ? extends T> mapLeft,
                         Function<? super R, ? extends T> mapRight) {
-        return right.map(mapRight).orElseThrow();
+        return right.map(mapRight).orElseThrow(() -> new NoSuchElementException("No right value present"));
     }
 
     @Override
