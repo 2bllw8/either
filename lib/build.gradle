@@ -33,6 +33,11 @@ tasks.named('jar') {
     }
 }
 
+tasks.withType(AbstractArchiveTask).configureEach {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
