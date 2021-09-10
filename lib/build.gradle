@@ -5,6 +5,7 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
+    id 'pmd'
 }
 
 repositories {
@@ -61,4 +62,13 @@ publishing {
             }
         }
     }
+}
+
+pmd {
+    consoleOutput = true
+    toolVersion = "6.38.0"
+    ruleSets = [
+            "category/java/errorprone.xml",
+            "category/java/bestpractices.xml"
+    ]
 }
