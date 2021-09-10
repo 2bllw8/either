@@ -20,7 +20,7 @@ allprojects {
 
 // Include the lib
 dependencies {
-    implementation 'com.github.2bllw8:either:1.0.0'
+    implementation 'com.github.2bllw8:either:1.0.1'
 }
 ```
 
