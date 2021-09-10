@@ -32,6 +32,9 @@ import java.util.stream.Collectors;
  */
 public abstract class Either<L, R> {
 
+    /* package */ Either() {
+    }
+
     /**
      * Whether this either has a left value.
      * <p>
