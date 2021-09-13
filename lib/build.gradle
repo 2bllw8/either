@@ -21,7 +21,7 @@ version = '2.0.0'
 
 javadoc {
     options.memberLevel = JavadocMemberLevel.PUBLIC
-    options.addStringOption('Xdoclint:all,-missing', '-quiet')
+    options.addStringOption 'Xdoclint:all,-missing', '-quiet'
 }
 
 java {
@@ -44,6 +44,24 @@ tasks.withType(AbstractArchiveTask).configureEach {
 }
 
 publishing {
+    repositories {
+        def localProps = new Properties()
+        maven {
+            def localPropsFile = project.rootProject.file('local.properties')
+            if (localPropsFile.exists()) {
+                localProps.load localPropsFile.newDataInputStream()
+            }
+
+            name = 'GitHubPackages'
+            url = localProps.getProperty 'repo.github.url', ''
+            credentials {
+                username = localProps.getProperty 'repo.github.username', ''
+                password = localProps.getProperty 'repo.github.token', ''
+            }
+        }
+    }
+
+
     publications {
         mavenJava(MavenPublication) {
             artifactId = rootProject.name
@@ -53,7 +71,7 @@ publishing {
             from components.java
             versionMapping {
                 usage('java-api') {
-                    fromResolutionOf('runtimeClasspath')
+                    fromResolutionOf 'runtimeClasspath'
                 }
                 usage('java-runtime') {
                     fromResolutionResult()
