@@ -19,6 +19,10 @@ dependencies {
 group = 'exe.bbllw8'
 version = '2.0.0'
 
+javadoc {
+    options.addStringOption('Xdoclint:all,-missing', '-quiet')
+}
+
 java {
     withJavadocJar()
     withSourcesJar()
