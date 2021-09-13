@@ -3,10 +3,17 @@
 [![Either CI](https://github.com/2bllw8/either/actions/workflows/main.yml/badge.svg)](https://github.com/2bllw8/either/actions/workflows/main.yml)
 [![](https://jitpack.io/v/2bllw8/either.svg)](https://jitpack.io/#2bllw8/either)
 
+Implementation of the `Either` type for Java 8+ based on the
+[Scala `Either` type](https://scala-lang.org/api/3.x/scala/util/Either.html).
 
-Implementation of the `Either` type for Java 8+
+`Either` is a type that represents a value of 1 of 2 possible types (disjoint union). An instance of `Either` is an
+instance of _either_ `Left` or `Right`.
 
-Either is a type that represents a value of 1 of 2 possible types (disjoint union).
+Conventionally, `Either` is used as a replacement for `Optional`: instead of having an empty
+`Optional`, a `Left` that contains useful information is used, while `Right` contains the successful result.
+
+While `Either` is right–biased, it is possible to operate on the left values by using a
+`LeftProjection`, obtained by invoking the `Either#left()` method.
 
 Usage:
 
@@ -20,39 +27,41 @@ allprojects {
 
 // Include the lib
 dependencies {
-    implementation 'com.github.2bllw8:either:1.0.1'
+    implementation 'com.github.2bllw8:either:2.0.0'
 }
 ```
 
 Example usage
 
 ```java
-import exe.bbllw8.Either;
+import exe.bbllw8.either.Either;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class Main {
 
-    private List<Either<Error, ADataType>> performMyOperations(String[] args) {
-        // ...
-    }
-
-    private MyDataType convertToMyDataType(ADataType obj) {
-        // ...
-    }
-
     public static void main(String[] args) {
-        // The "operations" returns either an error or a data result
-        List<Either<Error, MyDataType>> result = performMyOperations(args).stream()
-                .mapRight(data -> convertToMyDataType(data));
-        List<Error> errors = result.leftValues();
-        if (errors.isEmpty()) {
-            // All operation completed successfully
-            System.out.println(result.rightValues()
-                    .map(Object::toString)
-                    .collect(Collectors.joining(", ")));
-        } else {
-            System.err.println(errors.map(error -> "An error occurred: " + error)
-                    .collect(Collectors.joining("\n")));
+        MyMagicCode magic = new MyMagicCode();
+
+        List<Either<Error, MyObject>> results = Arrays.stream(args)
+                // If the function throws a NumberFormatException, it returns a Left(NumberFormatException),
+                // otherwise, a Right(Integer)
+                .map(arg -> Either.fromTry(() -> Integer.parseInt(arg), NumberFormatException.class)
+                        // Map the exception (on the left) to a string
+                        .left()
+                        .map(ex -> "Failed to parse argument: " + ex.getMessage())
+                        // Map the right value to something
+                        .map(magic::doSomeMagic))
+                .collect(Collectors.toList());
+        
+        for (int i = 0; i < results.size(); i++) {
+            final String arg = args[i];
+            final Either<String, MyObject> either = results.get(i);
+            if (either.isRight()) {
+                either.forEach(x -> System.out.println(arg + " -> " + x));
+            } else {
+                either.left().forEach(x -> System.err.println("Error occurred for argument '" + arg +"': " + x));
+            }
         }
     }
 }

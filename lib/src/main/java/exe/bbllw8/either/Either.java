@@ -4,14 +4,13 @@
  */
 package exe.bbllw8.either;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Represents a value of 1 of 2 possible types (disjoint union).
@@ -21,299 +20,315 @@ import java.util.stream.Collectors;
  * <p>
  * Construct an instance using one of:
  * <ul>
- *     <li>{@link #left(Object)}: instance with a left value</li>
- *     <li>{@link #left(Object)}: instance with a left value</li>
- *     <li>{@link #iff(boolean, Supplier, Supplier)}: instance with a left or
- *         value depending on the value of a condition</li>
+ *     <li>{@link Left}: instance with a left value</li>
+ *     <li>{@link Right}: instance with a right value</li>
+ *     <li>{@link Either#fromTry(Supplier, Class)}: instance from the result
+ *         of a function that may throw an exception</li>
  * </ul>
  *
- * @param <L> Type of the left value
- * @param <R> Type of the right value
+ * @param <A> Type of the left value
+ * @param <B> Type of the right value
  * @author 2bllw8
  * @since 1.0
  */
-public abstract class Either<L, R> {
+public abstract class Either<A, B> {
 
     /**
      * Default package-private constructor.
      *
      * <p>To instantiate this class use one of:
      * <ul>
-     *     <li>{@link #left(Object)}</li>
-     *     <li>{@link #right(Object)}</li>
-     *     <li>{@link #iff(boolean, Supplier, Supplier)}</li>
+     *     <li>{@link Left}</li>
+     *     <li>{@link Right}</li>
+     *     <li>{@link Either#fromTry(Supplier, Class)}</li>
      * </ul>
      *
      * @hidden
-     * @see #left(Object)
-     * @see #right(Object)
-     * @see #iff(boolean, Supplier, Supplier)
+     * @see Left
+     * @see Right
      * @since 1.1
      */
     /* package */ Either() {
     }
 
     /**
-     * Whether this either has a left value.
-     * <p>
-     * If this is <code>true</code>, {@link #isRight()}
-     * must be <code>false</code> and {@link #getLeft()}
-     * is guaranteed to not throw any exception.
-     *
-     * @return whether this either has a left value
-     * @see #isRight()
-     * @see #getLeft()
+     * @return Returns true if this is a {@link Left}, false otherwise.
      * @since 1.0
      */
     public abstract boolean isLeft();
 
     /**
-     * Whether this either has a right value.
-     * <p>
-     * If this is <code>true</code>, {@link #isLeft()}
-     * must be <code>false</code> and {@link #getRight()}
-     * is guaranteed to not throw any exception.
-     *
-     * @return whether this either has a right value
-     * @see #isLeft()
-     * @see #getRight()
+     * @return Returns true if this is a {@link Right}, false otherwise.
      * @since 1.0
      */
     public abstract boolean isRight();
 
     /**
-     * The left value contained.
-     * An exception is thrown if there's no left value
-     * ({@link #isLeft()} is false).
-     *
-     * @return The left value
-     * @see #isLeft()
-     * @since 1.0
-     * @throws NoSuchElementException if there's no left value
+     * @return The contained left value
+     * @throws NoSuchElementException if this is a {@link Right}
+     * @hidden
+     * @since 2.0
      */
-    public abstract L getLeft();
+    protected abstract A leftValue();
 
     /**
-     * The right value contained.
-     * An exception is thrown if there's no right value
-     * ({@link #isRight()} is false).
-     *
-     * @return The right value
-     * @see #isRight()
-     * @since 1.0
-     * @throws NoSuchElementException if there's no right value
+     * @return The contained right value
+     * @throws NoSuchElementException if this is a {@link Left}
+     * @hidden
+     * @since 2.0
      */
-    public abstract R getRight();
+    protected abstract B rightValue();
 
     /**
-     * Map either the left or the right value to a specific type
-     * and return it.
+     * Returns true if this is a {@link Right} and its value is
+     * equal to elem (as determined by {@link Object#equals(Object)}),
+     * returns false otherwise.
      *
-     * @param <T> The expected return type to which the value is mapped
-     * @param mapLeft Function that maps the left value (if present) to
-     *                the desired type
-     * @param mapRight Function that maps the right value (if present) to
-     *                 the desired type
-     * @return The value contained in the Either instanced mapped to another type
-     * @since 1.0
+     * @param elem The element to test.
+     * @return <code>true</code> if this is a {@link Right} value equal to <code>elem</code>
+     * @since 2.0
      */
-    public abstract <T> T either(Function<? super L, ? extends T> mapLeft,
-                                 Function<? super R, ? extends T> mapRight);
-
-    /**
-     * Map the left value (if present).
-     *
-     * @param <T> New type for the left value
-     * @param mapFunction The function that maps the left value to
-     *                    the desired type
-     * @return An instance of Either with the left value mapped or
-     *         the right value unchanged
-     * @see #mapRight(Function)
-     * @see #biMap(Function, Function)
-     * @since 1.0
-     */
-    public abstract <T> Either<T, R> mapLeft(Function<? super L, ? extends T> mapFunction);
-
-    /**
-     * Map the right value (if present).
-     *
-     * @param <T> New type for the right value
-     * @param mapFunction The function that maps the right value to
-     *                    the desired type
-     * @return An instance of Either with the right value mapped or
-     *         the left value unchanged
-     * @see #mapLeft(Function)
-     * @see #biMap(Function, Function)
-     * @since 1.0
-     */
-    public abstract <T> Either<L, T> mapRight(Function<? super R, ? extends T> mapFunction);
-
-    /**
-     * Transform either the left or right value but both the types
-     * of this Either instance.
-     *
-     * @param mapLeft The function that maps the left value to
-     *                the desired type
-     * @param mapRight The function that maps the right value to
-     *                 the desired type
-     * @param <A> New type for the left value
-     * @param <B> New type for the right value
-     * @return An instance of Either with either the left or right
-     *         value mapped, but both types changed
-     * @see #mapLeft(Function)
-     * @see #mapRight(Function)
-     * @since 1.0
-     */
-    public abstract <A, B> Either<A, B> biMap(Function<? super L, ? extends A> mapLeft,
-                                              Function<? super R, ? extends B> mapRight);
-
-    /**
-     * Swap the left and right values.
-     *
-     * @return An instance of Either with the left and right values
-     *         and types swapped
-     * @since 1.0
-     */
-    public final Either<R, L> swap() {
-        return isLeft()
-                ? right(getLeft())
-                : left(getRight());
+    public final boolean contains(B elem) {
+        return isRight() && Objects.requireNonNull(elem).equals(rightValue());
     }
+
+    /**
+     * @return Returns false if {@link Left} or returns the result of the application
+     * of the given predicate to the {@link Right} value.
+     * @since 2.0
+     */
+    public final boolean exists(Function<? super B, Boolean> predicate) {
+        return isRight() && Objects.requireNonNull(predicate).apply(rightValue());
+    }
+
+    /**
+     * @return Returns {@link Right} with the existing value of {@link Right} if this is a {@link Right}
+     * and the given predicate p holds for the right value, or an instance of
+     * {@link Left} with fallback as argument if this is a {@link Right}
+     * and the given predicate does not hold for the right value, or an instance of
+     * {@link Left} with the existing value of {@link Left} if this is a {@link Left}.
+     * @since 2.0
+     */
+    public final Either<A, B> filterOrElse(Function<? super B, Boolean> predicate, A fallback) {
+        if (isRight()) {
+            final B value = rightValue();
+            return Objects.requireNonNull(predicate).apply(value)
+                    ? new Right<>(value)
+                    : new Left<>(fallback);
+        } else {
+            return new Left<>(leftValue());
+        }
+    }
+
+    /**
+     * Binds the given function across {@link Right}.
+     *
+     * @param function The function to bind across {@link Right}.
+     * @since 2.0
+     */
+    public final <B1> Either<A, B1> flatMap(Function<? super B, Either<A, B1>> function) {
+        return isRight()
+                ? Objects.requireNonNull(function).apply(rightValue())
+                : new Left<>(leftValue());
+    }
+
+    /**
+     * Applies functionLeft if this is a {@link Left} or
+     * functionRight if this is a {@link Right}.
+     *
+     * @return Returns the results of applying the function.
+     * @since 2.0
+     */
+    public final <C> C fold(Function<? super A, ? extends C> functionLeft, Function<B, C> functionRight) {
+        return isLeft()
+                ? Objects.requireNonNull(functionLeft).apply(leftValue())
+                : Objects.requireNonNull(functionRight).apply(rightValue());
+    }
+
+    /**
+     * @return Returns true if {@link Left} or returns the result of the application
+     * of the given predicate to the {@link Right} value.
+     * @since 2.0
+     */
+    public final boolean forAll(Function<? super B, Boolean> predicate) {
+        return isLeft() || Objects.requireNonNull(predicate).apply(rightValue());
+    }
+
+    /**
+     * Executes the given side-effecting function if this is a {@link Right}.
+     *
+     * @since 2.0
+     */
+    public final void forEach(Consumer<? super B> consumer) {
+        if (isRight()) {
+            Objects.requireNonNull(consumer).accept(rightValue());
+        }
+    }
+
+    /**
+     * @return Returns the value from this {@link Right} or the given
+     * fallback if this is a {@link Left}.
+     * @since 2.0
+     */
+    public final B getOrElse(B fallback) {
+        return isRight()
+                ? rightValue()
+                : fallback;
+    }
+
+    /**
+     * The given function is applied if this is a {@link Right}.
+     *
+     * @since 2.0
+     */
+    public final <C> Either<A, C> map(Function<? super B, ? extends C> function) {
+        return isRight()
+                ? new Right<>(Objects.requireNonNull(function).apply(rightValue()))
+                : new Left<>(leftValue());
+    }
+
+    /**
+     * @return Returns this {@link Right} or the given argument if this
+     * is a {@link Left}.
+     * @since 2.0
+     */
+    public final Either<A, B> orElse(Either<A, B> alternative) {
+        return isRight()
+                ? new Right<>(rightValue())
+                : Objects.requireNonNull(alternative);
+    }
+
+    /**
+     * Allows for-comprehensions over the left side of Either instances,
+     * reversing the usual right-bias of the Either class.
+     *
+     * @return Projects this Either as a {@link Left}.
+     * @since 2.0
+     */
+    public final LeftProjection<A, B> left() {
+        return new LeftProjection<>(this);
+    }
+
+    /**
+     * @return Returns a stream containing the right value if this is a {@link Right},
+     * otherwise, {@link Stream#empty()}.
+     * @since 2.0
+     */
+    public final Stream<B> stream() {
+        return isRight()
+                ? Stream.of(rightValue())
+                : Stream.empty();
+    }
+
+    /**
+     * @return If this is a {@link Left}, then returns the left value in
+     * {@link Right} or vice versa.
+     * @since 1.0
+     */
+    public final Either<B, A> swap() {
+        return isLeft()
+                ? new Right<>(leftValue())
+                : new Left<>(rightValue());
+    }
+
+    /**
+     * @return Returns a {@link Optional} with the right value if this is a {@link Right},
+     * otherwise, {@link Optional#empty()}.
+     * @since 2.0
+     */
+    public Optional<B> toOptional() {
+        return isRight()
+                ? Optional.of(rightValue())
+                : Optional.empty();
+    }
+
+    /**
+     * @return Returns the right value if the given argument is {@link Right} or
+     * its value if it is {@link Left}.
+     * @since 2.0
+     */
+    public static <A, B> Either<A, B> flatten(Either<A, Either<A, B>> either) {
+        return either.isRight()
+                ? either.rightValue()
+                : new Left<>(either.leftValue());
+    }
+
+    /**
+     * Joins an Either through {@link Left}.
+     *
+     * <p>This method requires that the left side of this Either is itself an Either type.
+     * That is, this must be some type like:
+     * <code>Either&lt;Either&lt;C, B&gt;, B&gt;</code></p>
+     *
+     * <p>If this instance is a {@link Left}&lt;Either&lt;C, B&gt;&gt; then the contained
+     * Either&lt;C, B&gt; will be returned, otherwise this value will be returned unmodified.</p>
+     *
+     * @since 2.0
+     */
+    public static <B, C> Either<C, B> joinLeft(Either<Either<C, B>, B> either) {
+        return Objects.requireNonNull(either).isLeft()
+                ? either.leftValue()
+                : new Right<>(either.rightValue());
+    }
+
+    /**
+     * Joins an Either through {@link Right}.
+     *
+     * <p>This method requires that the left side of this Either is itself an Either type.
+     * That is, this must be some type like:
+     * <code>Either&lt;A, Either&lt;A, C&gt;&gt;</code></p>
+     *
+     * <p>If this instance is a {@link Right}&lt;Either&lt;A, C&gt;&gt; then the contained
+     * Either&lt;A, C&gt; will be returned, otherwise this value will be returned unmodified.</p>
+     *
+     * @since 2.0
+     */
+    public static <A, C> Either<A, C> joinRight(Either<A, Either<A, C>> either) {
+        return Objects.requireNonNull(either).isRight()
+                ? either.rightValue()
+                : new Left<>(either.leftValue());
+    }
+
+    /**
+     * @return An Either that is {@link Right} with the return value of the given function
+     * or {@link Left} with an exception thrown during the execution of the function.
+     * @since 2.0
+     */
+    @SuppressWarnings("unchecked")
+    public static <A extends Exception, B> Either<A, B> fromTry(Supplier<B> supplier, Class<A> leftClass) {
+        try {
+            return new Right<>(Objects.requireNonNull(supplier).get());
+        } catch (Exception e) {
+            if (Objects.requireNonNull(leftClass).isAssignableFrom(e.getClass())) {
+                return new Left<>((A) e);
+            } else {
+                // Unexpected exception, throw it up the stack
+                throw e;
+            }
+        }
+    }
+
 
     @Override
     public int hashCode() {
-        return Objects.hash(isLeft() ? getLeft() : getRight(), isLeft());
+        return isRight()
+                ? Objects.hash(true, rightValue())
+                : Objects.hash(false, leftValue());
     }
 
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
-        } else if (obj instanceof Either<?, ?>) {
-            final Either<?, ?> that = (Either<?, ?>) obj;
-            return isLeft()
-                    ? that.isLeft() && getLeft().equals(that.getLeft())
-                    : that.isRight() && getRight().equals(that.getRight());
-        } else {
+        } else if (!(obj instanceof Either<?, ?>)) {
             return false;
+        } else {
+            final Either<?, ?> that = (Either<?, ?>) obj;
+            if (isRight()) {
+                return that.isRight() && that.rightValue().equals(rightValue());
+            } else {
+                return that.isLeft() && that.leftValue().equals(leftValue());
+            }
         }
-    }
-
-    /**
-     * Create an Either instance that contains a value on the left.
-     *
-     * @param <L> Type of the left value
-     * @param <R> Type of the (nil) right value
-     * @param value The left value
-     * @return An instance of Either that has a left value
-     * @see #right(Object)
-     * @since 1.0
-     */
-    public static <L, R> Either<L, R> left(L value) {
-        return new LeftEither<>(Optional.of(value));
-    }
-
-    /**
-     * Create an Either instance that contains a value on the right.
-     *
-     * @param <L> Type of the (nil) left value
-     * @param <R> Type of the right value
-     * @param value The right value
-     * @return An instance of Either that has a right value
-     * @see #left(Object)
-     * @since 1.0
-     */
-    public static <L, R> Either<L, R> right(R value) {
-        return new RightEither<>(Optional.of(value));
-    }
-
-    /**
-     * Create an Either instance that contains a left or right
-     * value depending on a given condition.
-     *
-     * @param <L> Type of the left value
-     * @param <R> Type of the right value
-     * @param condition If this condition is <code>true</code>, then the
-     *                  Either instance will have a left value, otherwise
-     *                  it will have a right value
-     * @param leftSupplier Supplier of the left value, invoked only if necessary
-     * @param rightSupplier Supplier of the right value, invoked only if necessary
-     * @return An instance of Either that has a value depending on a
-     *         given condition
-     * @see #left(Object)
-     * @see #right(Object)
-     * @since 1.0
-     */
-    public static <L, R> Either<L, R> iff(boolean condition,
-                                          Supplier<? extends L> leftSupplier,
-                                          Supplier<? extends R> rightSupplier) {
-        return condition
-                ? left(leftSupplier.get())
-                : right(rightSupplier.get());
-    }
-
-    /**
-     * Return all the left values in a list of Either instances.
-     *
-     * @param <L> Type of the left value
-     * @param <R> Type of the right value
-     * @param list A list of instances of Either
-     * @return All the left values from the given list of instances of Either
-     * @since 1.0
-     */
-    public static <L, R> Collection<L> leftValues(List<Either<L, R>> list) {
-        return Objects.requireNonNull(list).stream()
-                .filter(Either::isLeft)
-                .map(Either::getLeft)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Return all the right values in a list of Either instances.
-     *
-     * @param <L> Type of the left value
-     * @param <R> Type of the right value
-     * @param list A list of instances of Either
-     * @return All the right values from the given list of instances of Either
-     * @since 1.0
-     */
-    public static <L, R> Collection<R> rightValues(List<Either<L, R>> list) {
-        return Objects.requireNonNull(list).stream()
-                .filter(Either::isRight)
-                .map(Either::getRight)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Reduce an Either instance that has left and right of the
-     * same type.
-     *
-     * @param <T> Type of the value that will be reduced from the
-     *           instance of Either
-     * @param either An instance of Either that has both the left and
-     *               right values of the same type
-     * @return The value contained within the given instance of Either.
-     * @since 1.0
-     */
-    public static <T> T reduce(Either<T, T> either) {
-        return Objects.requireNonNull(either).either(Function.identity(), Function.identity());
-    }
-
-    /**
-     * @return An exception for that's thrown when the requested
-     *         left value is not present
-     * @hidden
-     */
-    protected static NoSuchElementException noLeftValueException() {
-        return new NoSuchElementException("No left value present");
-    }
-
-    /**
-     * @return An exception for that's thrown when the requested
-     *         right value is not present
-     * @hidden
-     */
-    protected static NoSuchElementException noRightValueException() {
-        return new NoSuchElementException("No right value present");
     }
 }
