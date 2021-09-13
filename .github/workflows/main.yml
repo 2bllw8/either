@@ -52,5 +52,15 @@ jobs:
           ./gradlew assemble
       - name: Test
         id: test
+        if: success()
         run: |
           ./gradlew check
+      - name: Publish Javadoc
+        id: javadoc
+        if: success()
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: docs
+          FOLDER: lib/build/docs/javadoc
+          SINGLE_COMMIT: true
