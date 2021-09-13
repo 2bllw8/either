@@ -4,8 +4,6 @@
  */
 package exe.bbllw8.either;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.junit.Assert;
@@ -73,10 +71,10 @@ public class LeftProjectionTest {
 
     @Test
     public void stream() {
-        Assert.assertEquals(List.of(12),
-                new Left<>(12).left().stream().collect(Collectors.toList()));
-        Assert.assertEquals(Collections.emptyList(),
-                new Right<>(12).left().stream().collect(Collectors.toList()));
+        Assert.assertEquals("pancake",
+                new Left<>("pancake").left().stream().collect(Collectors.joining()));
+        Assert.assertEquals("",
+                new Right<String, String>("cookie").left().stream().collect(Collectors.joining()));
     }
 
     @Test

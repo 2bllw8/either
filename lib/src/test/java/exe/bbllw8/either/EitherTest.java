@@ -5,8 +5,6 @@
 package exe.bbllw8.either;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.junit.Assert;
@@ -112,10 +110,10 @@ public class EitherTest {
 
     @Test
     public void stream() {
-        Assert.assertEquals(List.of(12),
-                new Right<>(12).stream().collect(Collectors.toList()));
-        Assert.assertEquals(Collections.emptyList(),
-                new Left<>(7).stream().collect(Collectors.toList()));
+        Assert.assertEquals("pancake",
+                new Right<>("pancake").stream().collect(Collectors.joining()));
+        Assert.assertEquals("",
+                new Left<String, String>("cookie").stream().collect(Collectors.joining()));
     }
 
     @Test
