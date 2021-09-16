@@ -1,7 +1,7 @@
 # Either
 
 [![Either CI](https://github.com/2bllw8/either/actions/workflows/main.yml/badge.svg)](https://github.com/2bllw8/either/actions/workflows/main.yml)
-[![](https://jitpack.io/v/2bllw8/either.svg)](https://jitpack.io/#2bllw8/either)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.2bllw8/either)](https://search.maven.org/artifact/io.github.2bllw8/either)
 
 Implementation of the `Either` type for Java 8+ based on the
 [Scala `Either` type](https://scala-lang.org/api/3.x/scala/util/Either.html).
@@ -15,23 +15,15 @@ Conventionally, `Either` is used as a replacement for `Optional`: instead of hav
 While `Either` is right–biased, it is possible to operate on the left values by using a
 `LeftProjection`, obtained by invoking the `Either#left()` method.
 
-Usage:
+## Releases
+
+The latest release is available on [Maven Central](https://search.maven.org/artifact/io.github.2bllw8/either/2.0.0/jar).
 
 ```groovy
-// Add jitpack repo
-allprojects {
-    repositories {
-        maven { url 'https://jitpack.io' }
-    }
-}
-
-// Include the lib
-dependencies {
-    implementation 'com.github.2bllw8:either:2.0.0'
-}
+implementation 'io.github.2bllw8:either:2.0.0'
 ```
 
-Example usage
+## Usage
 
 ```java
 import exe.bbllw8.either.Either;
@@ -43,30 +35,32 @@ public class Main {
     public static void main(String[] args) {
         MyMagicCode magic = new MyMagicCode();
 
-        List<Either<Error, MyObject>> results = Arrays.stream(args)
-                // If the function throws a NumberFormatException, it returns a Left(NumberFormatException),
+        List<Either<MyError, MyObject>> results = Arrays.stream(args)
+                // If the function throws a NumberFormatException,
+                // it returns a Left(NumberFormatException),
                 // otherwise, a Right(Integer)
-                .map(arg -> Either.fromTry(() -> Integer.parseInt(arg), NumberFormatException.class)
-                        // Map the exception (on the left) to a string
-                        .left()
-                        .map(ex -> "Failed to parse argument: " + ex.getMessage())
-                        // Map the right value to something
+                .map(arg -> Either.fromTry(() -> Integer.parseInt(arg), 
+                                NumberFormatException.class)
+                        // Map the left value to a MyError instance
+                        .left().map(ex -> new MyError(ex.getMessage()))
+                        // Map the right value to a MyObject instance
                         .map(magic::doSomeMagic))
                 .collect(Collectors.toList());
         
         for (int i = 0; i < results.size(); i++) {
             final String arg = args[i];
-            final Either<String, MyObject> either = results.get(i);
+            final Either<MyError, MyObject> either = results.get(i);
             if (either.isRight()) {
                 either.forEach(x -> System.out.println(arg + " -> " + x));
             } else {
-                either.left().forEach(x -> System.err.println("Error occurred for argument '" + arg +"': " + x));
+                either.left().forEach(x -> System.err.println("Error occurred for '" 
+                        + arg + "': " + x));
             }
         }
     }
 }
 ```
 
-### Javadoc
+## Documentation
 
 Javadoc is available at [2bllw8.github.io/either](https://2bllw8.github.io/either)
