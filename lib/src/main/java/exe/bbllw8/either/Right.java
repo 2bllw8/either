@@ -44,7 +44,7 @@ public final class Right<A, B> extends Either<A, B> {
     }
 
     /**
-     * Up–casts this {@link Right} with another left side type.
+     * Up-casts this {@link Right} with another left side type.
      */
     public <A1> Either<A1, B> withLeft() {
         return new Right<>(value);
