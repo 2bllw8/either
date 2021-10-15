@@ -38,6 +38,9 @@ javadoc {
 java {
     withJavadocJar()
     withSourcesJar()
+
+    sourceCompatibility = 8
+    targetCompatibility = 8
 }
 
 tasks.named('jar') {
