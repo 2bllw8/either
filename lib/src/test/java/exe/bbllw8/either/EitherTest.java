@@ -68,8 +68,22 @@ public class EitherTest {
         new Right<>("Hello").forEach(sb::append);
         Assert.assertEquals("Hello", sb.toString());
 
-        new Left<>(" world").forEach(sb::append);
+        new Left<>("world").forEach(sb::append);
         Assert.assertEquals("Hello", sb.toString());
+    }
+
+    @Test
+    public void forEachBi() {
+        final StringBuilder sbLeft = new StringBuilder();
+        final StringBuilder sbRight = new StringBuilder();
+
+        new Right<>("Hello").forEach(sbLeft::append, sbRight::append);
+        Assert.assertEquals("Hello", sbRight.toString());
+        Assert.assertEquals("", sbLeft.toString());
+
+        new Left<>("world").forEach(sbLeft::append, sbRight::append);
+        Assert.assertEquals("Hello", sbRight.toString());
+        Assert.assertEquals("world", sbLeft.toString());
     }
 
     @Test

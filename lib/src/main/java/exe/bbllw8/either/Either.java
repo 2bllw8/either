@@ -164,6 +164,22 @@ public abstract class Either<A, B> {
     }
 
     /**
+     * Executes a given side-effecting function depending on whether
+     * this is a {@link Left} or {@link Right}.
+     *
+     * @since 2.1
+     */
+    public final void forEach(Consumer<? super A> consumerLeft,
+                              Consumer<? super B> consumerRight) {
+        if (isRight()) {
+            Objects.requireNonNull(consumerRight).accept(rightValue());
+        } else {
+            Objects.requireNonNull(consumerLeft).accept(leftValue());
+        }
+    }
+
+
+    /**
      * @return Returns the value from this {@link Right} or the given
      * fallback if this is a {@link Left}.
      * @since 2.0
