@@ -20,7 +20,7 @@ While `Either` is right–biased, it is possible to operate on the left values b
 The latest release is available on [Maven Central](https://search.maven.org/artifact/io.github.2bllw8/either/2.0.0/jar).
 
 ```groovy
-implementation 'io.github.2bllw8:either:2.0.0'
+implementation 'io.github.2bllw8:either:2.1.0'
 ```
 
 ## Usage
@@ -49,13 +49,10 @@ public class Main {
         
         for (int i = 0; i < results.size(); i++) {
             final String arg = args[i];
-            final Either<MyError, MyObject> either = results.get(i);
-            if (either.isRight()) {
-                either.forEach(x -> System.out.println(arg + " -> " + x));
-            } else {
-                either.left().forEach(x -> System.err.println("Error occurred for '" 
-                        + arg + "': " + x));
-            }
+            results.get(i).forEach(
+                    left -> System.err.println(
+                            "Error occurred for '" + arg + "': " + left),
+                    right -> System.out.println(arg + " -> " + right));
         }
     }
 }

@@ -28,7 +28,7 @@ pmd {
 
 archivesBaseName = rootProject.name
 group = 'exe.bbllw8'
-version = '2.0.0'
+version = '2.1.0'
 
 javadoc {
     options.memberLevel = JavadocMemberLevel.PUBLIC
