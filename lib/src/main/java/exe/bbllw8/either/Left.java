@@ -34,12 +34,12 @@ public final class Left<A, B> extends Either<A, B> {
     }
 
     @Override
-    protected A leftValue() {
+    A leftValue() {
         return value;
     }
 
     @Override
-    protected B rightValue() {
+    B rightValue() {
         throw new NoSuchElementException("This is not a Right");
     }
 

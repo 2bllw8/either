@@ -66,16 +66,16 @@ public abstract class Either<A, B> {
     /**
      * @return The contained left value
      * @throws NoSuchElementException if this is a {@link Right}
-     * @since 2.0
+     * @hidden
      */
-    protected abstract A leftValue();
+    abstract A leftValue();
 
     /**
      * @return The contained right value
      * @throws NoSuchElementException if this is a {@link Left}
-     * @since 2.0
+     * @hidden
      */
-    protected abstract B rightValue();
+    abstract B rightValue();
 
     /**
      * Returns true if this is a {@link Right} and its value is
