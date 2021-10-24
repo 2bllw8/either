@@ -20,7 +20,7 @@ While `Either` is right–biased, it is possible to operate on the left values b
 The latest release is available on [Maven Central](https://search.maven.org/artifact/io.github.2bllw8/either/2.0.0/jar).
 
 ```groovy
-implementation 'io.github.2bllw8:either:2.1.0'
+implementation 'io.github.2bllw8:either:2.2.0'
 ```
 
 ## Usage
@@ -52,7 +52,7 @@ public class Main {
                     // Map the right value to a MyObject instance
                     .map(magic::doSomeMagic)
                     .forEach(leftVal -> System.err.println(
-                                     "E: " + arg + ": " + leftVal),
+                                    "E: " + arg + ": " + leftVal),
                             rightVal -> System.out.println(
                                     arg + " -> " + rightVal));
         }
