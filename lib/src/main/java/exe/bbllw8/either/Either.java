@@ -40,7 +40,7 @@ public abstract class Either<A, B> {
      * <ul>
      *     <li>{@link Left}</li>
      *     <li>{@link Right}</li>
-     *     <li>{@link Either#fromTry(Supplier, Class)}</li>
+     *     <li>{@link Either#tryCatch(Supplier, Class)}</li>
      * </ul>
      *
      * @hidden
@@ -307,21 +307,78 @@ public abstract class Either<A, B> {
      * @return An Either that is {@link Right} with the return value of the given function
      * or {@link Left} with an exception thrown during the execution of the function.
      * @since 2.0
+     * @deprecated Use {@link #tryCatch(Supplier, Class)}
      */
-    @SuppressWarnings("unchecked")
+    @Deprecated
     public static <A extends Exception, B> Either<A, B> fromTry(Supplier<B> supplier, Class<A> leftClass) {
+        return tryCatch(supplier, leftClass);
+    }
+
+    /**
+     * Returns An Either that is {@link Right} with the return value of the given function
+     * or {@link Left} with an {@link Throwable} thrown during the execution of the function.
+     * In order to work around checked expressions handling of the Java Programming language,
+     * it is possible to wrap exceptions in a {@link CheckedException} instance.
+     *
+     * @since 2.2
+     */
+    @SuppressWarnings({"PMD.AvoidCatchingThrowable", "unchecked"})
+    public static <A extends Throwable, B> Either<A, B> tryCatch(Supplier<B> supplier, Class<A> leftClass) {
         try {
             return new Right<>(Objects.requireNonNull(supplier).get());
-        } catch (Exception e) {
-            if (Objects.requireNonNull(leftClass).isAssignableFrom(e.getClass())) {
-                return new Left<>((A) e);
+        } catch (CheckedException ue) {
+            // Wrapped checked exception
+            final Throwable t = ue.getCause();
+            if (isNotFatalThrowable(t) && leftClass.isAssignableFrom(t.getClass())) {
+                return new Left<>((A) t);
             } else {
-                // Unexpected exception, throw it up the stack
-                throw e;
+                // Unexpected or fatal
+                throw ue;
+            }
+        } catch (Throwable t) {
+            // Native unchecked or fatal exception
+            if (isNotFatalThrowable(t) && leftClass.isAssignableFrom(t.getClass())) {
+                return new Left<>((A) t);
+            } else {
+                // Unexpected or fatal
+                throw t;
             }
         }
     }
 
+    /**
+     * Returns an Either that is {@link Right} with the return value of a given supplier
+     * or {@link Left} with the return value of a given function that takes a {@link Throwable}
+     * thrown during the execution of the right value supplier as its argument.
+     * In order to work around checked expressions handling of the Java Programming language,
+     * it is possible to wrap exceptions in a {@link CheckedException} instance.
+     *
+     * @since 2.2
+     */
+    @SuppressWarnings("PMD.AvoidCatchingThrowable")
+    public static <A, B> Either<A, B> tryCatch(Supplier<B> supplier,
+                                               Function<Throwable, A> fe) {
+        try {
+            return new Right<>(Objects.requireNonNull(supplier).get());
+        } catch (CheckedException ue) {
+            // Wrapped checked exception
+            final Throwable t = ue.getCause();
+            if (isNotFatalThrowable(t)) {
+                return new Left<>(Objects.requireNonNull(fe.apply(t)));
+            } else {
+                // Unexpected or fatal
+                throw ue;
+            }
+        } catch (Throwable t) {
+            // Native unchecked or fatal exception
+            if (isNotFatalThrowable(t)) {
+                return new Left<>(Objects.requireNonNull(fe.apply(t)));
+            } else {
+                // Unexpected or fatal
+                throw t;
+            }
+        }
+    }
 
     @Override
     public int hashCode() {
@@ -344,5 +401,12 @@ public abstract class Either<A, B> {
                 return that.isLeft() && that.leftValue().equals(leftValue());
             }
         }
+    }
+
+    private static boolean isNotFatalThrowable(Throwable t) {
+        return !(t instanceof VirtualMachineError
+                || t instanceof ThreadDeath
+                || t instanceof InterruptedException
+                || t instanceof LinkageError);
     }
 }

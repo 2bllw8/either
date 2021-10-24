@@ -5,6 +5,9 @@
 package exe.bbllw8.either;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.junit.Assert;
@@ -167,14 +170,31 @@ public class EitherTest {
     }
 
     @Test
-    public void fromTry() {
-        Assert.assertTrue(Either.fromTry(() -> Integer.parseInt("12"), NumberFormatException.class).isRight());
-        Assert.assertTrue(Either.fromTry(() -> Integer.parseInt("pancake"), NumberFormatException.class).isLeft());
+    public void tryCatch() {
+        Assert.assertTrue(Either.tryCatch(() -> Integer.parseInt("12"), NumberFormatException.class).isRight());
+        Assert.assertTrue(Either.tryCatch(() -> Integer.parseInt("pancake"), NumberFormatException.class).isLeft());
+        Assert.assertEquals(Either.tryCatch(() -> Integer.parseInt("12"), t -> 0), new Right<>(12));
+        Assert.assertEquals(Either.tryCatch(() -> Integer.parseInt("pancake"), t -> 0), new Left<>(0));
     }
 
     @Test(expected = NumberFormatException.class)
     public void fromTryUnexpected() {
-        Either.fromTry(() -> Integer.parseInt("pancake"), IOException.class);
+        Either.tryCatch(() -> Integer.parseInt("pancake"), IOException.class);
+    }
+
+    @Test
+    public void tryCatchUnchecked() {
+        Assert.assertEquals(Either.tryCatch(() -> {
+            try {
+                final Path p = Files.createTempFile("pancake", "file");
+                Files.delete(p);
+                // Can't delete 2 times
+                Files.delete(p);
+                return true;
+            } catch (IOException e) {
+                throw new CheckedException(e);
+            }
+        }, Throwable::getClass), new Left<>(NoSuchFileException.class));
     }
 
     @SuppressWarnings("AssertBetweenInconvertibleTypes")
