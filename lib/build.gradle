@@ -17,23 +17,9 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
 }
 
-pmd {
-    consoleOutput = true
-    toolVersion = "6.38.0"
-    ruleSets = [
-            "category/java/errorprone.xml",
-            "category/java/bestpractices.xml"
-    ]
-}
-
 archivesBaseName = rootProject.name
 group = 'exe.bbllw8'
 version = '2.1.0'
-
-javadoc {
-    options.memberLevel = JavadocMemberLevel.PUBLIC
-    options.addStringOption 'Xdoclint:all,-missing', '-quiet'
-}
 
 java {
     withJavadocJar()
@@ -41,6 +27,11 @@ java {
 
     sourceCompatibility = 8
     targetCompatibility = 8
+}
+
+javadoc {
+    options.memberLevel = JavadocMemberLevel.PUBLIC
+    options.addStringOption 'Xdoclint:all,-missing', '-quiet'
 }
 
 tasks.named('jar') {
@@ -61,6 +52,15 @@ def localProps = new Properties();
 def localPropsFile = project.rootProject.file('local.properties')
 if (localPropsFile.exists()) {
     localProps.load localPropsFile.newDataInputStream()
+}
+
+pmd {
+    consoleOutput = true
+    toolVersion = "6.38.0"
+    ruleSets = [
+            "category/java/errorprone.xml",
+            "category/java/bestpractices.xml"
+    ]
 }
 
 publishing {
