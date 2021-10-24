@@ -27,6 +27,10 @@ implementation 'io.github.2bllw8:either:2.1.0'
 
 ```java
 import exe.bbllw8.either.Either;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -34,25 +38,23 @@ public class Main {
 
     public static void main(String[] args) {
         MyMagicCode magic = new MyMagicCode();
-
-        List<Either<MyError, MyObject>> results = Arrays.stream(args)
-                // If the function throws a NumberFormatException,
-                // it returns a Left(NumberFormatException),
-                // otherwise, a Right(Integer)
-                .map(arg -> Either.fromTry(() -> Integer.parseInt(arg), 
-                                NumberFormatException.class)
-                        // Map the left value to a MyError instance
-                        .left().map(ex -> new MyError(ex.getMessage()))
-                        // Map the right value to a MyObject instance
-                        .map(magic::doSomeMagic))
-                .collect(Collectors.toList());
-        
-        for (int i = 0; i < results.size(); i++) {
-            final String arg = args[i];
-            results.get(i).forEach(
-                    left -> System.err.println(
-                            "Error occurred for '" + arg + "': " + left),
-                    right -> System.out.println(arg + " -> " + right));
+        for (String arg : args) {
+            final Path p = new File(arg).toPath();
+            Either.tryCatch(() -> {
+                try {
+                    return Files.size(path);
+                } catch (IOException e) {
+                    throw new CheckedException(e);
+                }
+            }, IOException.class)
+                    // Map the left value to a MyError instance
+                    .left().map(MyError::new)
+                    // Map the right value to a MyObject instance
+                    .map(magic::doSomeMagic)
+                    .forEach(leftVal -> System.err.println(
+                                     "E: " + arg + ": " + leftVal),
+                            rightVal -> System.out.println(
+                                    arg + " -> " + rightVal));
         }
     }
 }
