@@ -4,8 +4,6 @@
  */
 package exe.bbllw8.either;
 
-import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -62,20 +60,6 @@ public abstract class Either<A, B> {
     public abstract boolean isRight();
 
     /**
-     * @return The contained left value
-     * @throws NoSuchElementException if this is a {@link Right}
-     * @hidden
-     */
-    abstract A leftValue();
-
-    /**
-     * @return The contained right value
-     * @throws NoSuchElementException if this is a {@link Left}
-     * @hidden
-     */
-    abstract B rightValue();
-
-    /**
      * Returns true if this is a {@link Right} and its value is
      * equal to elem (as determined by {@link Object#equals(Object)}),
      * returns false otherwise.
@@ -84,18 +68,14 @@ public abstract class Either<A, B> {
      * @return <code>true</code> if this is a {@link Right} value equal to <code>elem</code>
      * @since 2.0
      */
-    public final boolean contains(B elem) {
-        return isRight() && Objects.requireNonNull(elem).equals(rightValue());
-    }
+    public abstract boolean contains(B elem);
 
     /**
      * @return Returns false if {@link Left} or returns the result of the application
      * of the given predicate to the {@link Right} value.
      * @since 2.0
      */
-    public final boolean exists(Function<? super B, Boolean> predicate) {
-        return isRight() && Objects.requireNonNull(predicate).apply(rightValue());
-    }
+    public abstract boolean exists(Function<? super B, Boolean> predicate);
 
     /**
      * @return Returns {@link Right} with the existing value of {@link Right} if this is a {@link Right}
@@ -105,16 +85,7 @@ public abstract class Either<A, B> {
      * {@link Left} with the existing value of {@link Left} if this is a {@link Left}.
      * @since 2.0
      */
-    public final Either<A, B> filterOrElse(Function<? super B, Boolean> predicate, A fallback) {
-        if (isRight()) {
-            final B value = rightValue();
-            return Objects.requireNonNull(predicate).apply(value)
-                    ? new Right<>(value)
-                    : new Left<>(fallback);
-        } else {
-            return new Left<>(leftValue());
-        }
-    }
+    public abstract Either<A, B> filterOrElse(Function<? super B, Boolean> predicate, A fallback);
 
     /**
      * Binds the given function across {@link Right}.
@@ -122,11 +93,7 @@ public abstract class Either<A, B> {
      * @param function The function to bind across {@link Right}.
      * @since 2.0
      */
-    public final <B1> Either<A, B1> flatMap(Function<? super B, Either<A, B1>> function) {
-        return isRight()
-                ? Objects.requireNonNull(function).apply(rightValue())
-                : new Left<>(leftValue());
-    }
+    public abstract <B1> Either<A, B1> flatMap(Function<? super B, Either<A, B1>> function);
 
     /**
      * Applies functionLeft if this is a {@link Left} or
@@ -135,31 +102,21 @@ public abstract class Either<A, B> {
      * @return Returns the results of applying the function.
      * @since 2.0
      */
-    public final <C> C fold(Function<? super A, ? extends C> functionLeft, Function<B, C> functionRight) {
-        return isLeft()
-                ? Objects.requireNonNull(functionLeft).apply(leftValue())
-                : Objects.requireNonNull(functionRight).apply(rightValue());
-    }
+    public abstract <C> C fold(Function<? super A, ? extends C> functionLeft, Function<B, C> functionRight);
 
     /**
      * @return Returns true if {@link Left} or returns the result of the application
      * of the given predicate to the {@link Right} value.
      * @since 2.0
      */
-    public final boolean forAll(Function<? super B, Boolean> predicate) {
-        return isLeft() || Objects.requireNonNull(predicate).apply(rightValue());
-    }
+    public abstract boolean forAll(Function<? super B, Boolean> predicate);
 
     /**
      * Executes the given side-effecting function if this is a {@link Right}.
      *
      * @since 2.0
      */
-    public final void forEach(Consumer<? super B> consumer) {
-        if (isRight()) {
-            Objects.requireNonNull(consumer).accept(rightValue());
-        }
-    }
+    public abstract void forEach(Consumer<? super B> consumer);
 
     /**
      * Executes a given side-effecting function depending on whether
@@ -167,48 +124,29 @@ public abstract class Either<A, B> {
      *
      * @since 2.1
      */
-    public final void forEach(Consumer<? super A> consumerLeft,
-                              Consumer<? super B> consumerRight) {
-        if (isRight()) {
-            Objects.requireNonNull(consumerRight).accept(rightValue());
-        } else {
-            Objects.requireNonNull(consumerLeft).accept(leftValue());
-        }
-    }
-
+    public abstract void forEach(Consumer<? super A> consumerLeft,
+                                 Consumer<? super B> consumerRight);
 
     /**
      * @return Returns the value from this {@link Right} or the given
      * fallback if this is a {@link Left}.
      * @since 2.0
      */
-    public final B getOrElse(B fallback) {
-        return isRight()
-                ? rightValue()
-                : fallback;
-    }
+    public abstract B getOrElse(B fallback);
 
     /**
      * The given function is applied if this is a {@link Right}.
      *
      * @since 2.0
      */
-    public final <C> Either<A, C> map(Function<? super B, ? extends C> function) {
-        return isRight()
-                ? new Right<>(Objects.requireNonNull(function).apply(rightValue()))
-                : new Left<>(leftValue());
-    }
+    public abstract <C> Either<A, C> map(Function<? super B, ? extends C> function);
 
     /**
      * @return Returns this {@link Right} or the given argument if this
      * is a {@link Left}.
      * @since 2.0
      */
-    public final Either<A, B> orElse(Either<A, B> alternative) {
-        return isRight()
-                ? new Right<>(rightValue())
-                : Objects.requireNonNull(alternative);
-    }
+    public abstract Either<A, B> orElse(Either<A, B> alternative);
 
     /**
      * Allows for-comprehensions over the left side of Either instances,
@@ -217,42 +155,28 @@ public abstract class Either<A, B> {
      * @return Projects this Either as a {@link Left}.
      * @since 2.0
      */
-    public final LeftProjection<A, B> left() {
-        return new LeftProjection<>(this);
-    }
+    public abstract LeftProjection<A, B> left();
 
     /**
      * @return Returns a stream containing the right value if this is a {@link Right},
      * otherwise, {@link Stream#empty()}.
      * @since 2.0
      */
-    public final Stream<B> stream() {
-        return isRight()
-                ? Stream.of(rightValue())
-                : Stream.empty();
-    }
+    public abstract Stream<B> stream();
 
     /**
      * @return If this is a {@link Left}, then returns the left value in
      * {@link Right} or vice versa.
      * @since 1.0
      */
-    public final Either<B, A> swap() {
-        return isLeft()
-                ? new Right<>(leftValue())
-                : new Left<>(rightValue());
-    }
+    public abstract Either<B, A> swap();
 
     /**
      * @return Returns a {@link Optional} with the right value if this is a {@link Right},
      * otherwise, {@link Optional#empty()}.
      * @since 2.0
      */
-    public Optional<B> toOptional() {
-        return isRight()
-                ? Optional.of(rightValue())
-                : Optional.empty();
-    }
+    public abstract Optional<B> toOptional();
 
     /**
      * @return Returns the right value if the given argument is {@link Right} or
@@ -260,9 +184,14 @@ public abstract class Either<A, B> {
      * @since 2.0
      */
     public static <A, B> Either<A, B> flatten(Either<A, Either<A, B>> either) {
-        return either.isRight()
-                ? either.rightValue()
-                : new Left<>(either.leftValue());
+        if (either instanceof Left<?, ?>) {
+            return Left.flatten((Left<A, Either<A, B>>) either);
+        } else if (either instanceof Right<?, ?>) {
+            return Right.flatten((Right<A, Either<A, B>>) either);
+        } else {
+            // Should never happen
+            throw new IllegalStateException();
+        }
     }
 
     /**
@@ -278,9 +207,14 @@ public abstract class Either<A, B> {
      * @since 2.0
      */
     public static <B, C> Either<C, B> joinLeft(Either<Either<C, B>, B> either) {
-        return Objects.requireNonNull(either).isLeft()
-                ? either.leftValue()
-                : new Right<>(either.rightValue());
+        if (either instanceof Left<?, ?>) {
+            return Left.joinLeft((Left<Either<C, B>, B>) either);
+        } else if (either instanceof Right<?, ?>) {
+            return Right.joinLeft((Right<Either<C, B>, B>) either);
+        } else {
+            // Should never happen
+            throw new IllegalStateException();
+        }
     }
 
     /**
@@ -296,9 +230,14 @@ public abstract class Either<A, B> {
      * @since 2.0
      */
     public static <A, C> Either<A, C> joinRight(Either<A, Either<A, C>> either) {
-        return Objects.requireNonNull(either).isRight()
-                ? either.rightValue()
-                : new Left<>(either.leftValue());
+        if (either instanceof Left<?, ?>) {
+            return Left.joinRight((Left<A, Either<A, C>>) either);
+        } else if (either instanceof Right<?, ?>) {
+            return Right.joinRight((Right<A, Either<A, C>>) either);
+        } else {
+            // Should never happen
+            throw new IllegalStateException();
+        }
     }
 
     /**
@@ -321,6 +260,7 @@ public abstract class Either<A, B> {
      * @since 2.2
      * @deprecated Use {@link Try#from(Supplier)} and {@link Try#toEither()}
      */
+    @Deprecated
     @SuppressWarnings({"PMD.AvoidCatchingThrowable", "unchecked"})
     public static <A extends Throwable, B> Either<A, B> tryCatch(Supplier<B> supplier, Class<A> leftClass) {
         final Try<B> tryObj = Try.from(supplier);
@@ -344,9 +284,10 @@ public abstract class Either<A, B> {
      * In order to work around checked expressions handling of the Java Programming language,
      * it is possible to wrap exceptions in a {@link CheckedException} instance.
      *
-     * @deprecated Use {@link Try#from(Supplier)}
      * @since 2.2
+     * @deprecated Use {@link Try#from(Supplier)}
      */
+    @Deprecated
     @SuppressWarnings("PMD.AvoidCatchingThrowable")
     public static <A, B> Either<A, B> tryCatch(Supplier<B> supplier,
                                                Function<Throwable, A> fe) {
@@ -356,29 +297,6 @@ public abstract class Either<A, B> {
         } else {
             final Throwable t = tryObj.failed().get();
             return new Left<>(fe.apply(t));
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        return isRight()
-                ? Objects.hash(true, rightValue())
-                : Objects.hash(false, leftValue());
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        } else if (!(obj instanceof Either<?, ?>)) {
-            return false;
-        } else {
-            final Either<?, ?> that = (Either<?, ?>) obj;
-            if (isRight()) {
-                return that.isRight() && that.rightValue().equals(rightValue());
-            } else {
-                return that.isLeft() && that.leftValue().equals(leftValue());
-            }
         }
     }
 }
