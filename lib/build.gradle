@@ -48,7 +48,7 @@ tasks.withType(AbstractArchiveTask).configureEach {
     reproducibleFileOrder = true
 }
 
-def localProps = new Properties();
+def localProps = new Properties()
 def localPropsFile = project.rootProject.file('local.properties')
 if (localPropsFile.exists()) {
     localProps.load localPropsFile.newDataInputStream()
@@ -140,4 +140,3 @@ signing {
     }
     sign publishing.publications.mavenJava
 }
-
