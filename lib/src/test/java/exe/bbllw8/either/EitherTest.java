@@ -177,11 +177,6 @@ public class EitherTest {
         Assert.assertEquals(Either.tryCatch(() -> Integer.parseInt("pancake"), t -> 0), new Left<>(0));
     }
 
-    @Test(expected = NumberFormatException.class)
-    public void fromTryUnexpected() {
-        Either.tryCatch(() -> Integer.parseInt("pancake"), IOException.class);
-    }
-
     @Test
     public void tryCatchUnchecked() {
         Assert.assertEquals(Either.tryCatch(() -> {
