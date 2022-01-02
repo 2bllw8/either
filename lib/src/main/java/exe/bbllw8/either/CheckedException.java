@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 2bllw8
+ * SPDX-License-Identifier: Apache-2.0
+ */
 package exe.bbllw8.either;
 
 import java.util.function.Supplier;
