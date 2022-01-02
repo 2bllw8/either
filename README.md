@@ -17,7 +17,7 @@ the successful result.
 While `Either` is right–biased, it is possible to operate on the left values by using a
 `LeftProjection`, obtained by invoking the `Either#left()` method.
 
-The `Try` type represents a computation that may either result in an * exception, or
+The `Try` type represents a computation that may either result in an exception, or
 return a successfully computed value. 
 It's similar to, but semantically different from the `Either` type.
 
@@ -25,10 +25,10 @@ Instances of `Try`, are either an instance of _either_ `Success` or `Failure`.
 
 ## Releases
 
-The latest release is available on [Maven Central](https://search.maven.org/artifact/io.github.2bllw8/either/2.0.0/jar).
+The latest release is available on [Maven Central](https://search.maven.org/artifact/io.github.2bllw8/either/3.0.0/jar).
 
 ```groovy
-implementation 'io.github.2bllw8:either:2.2.0'
+implementation 'io.github.2bllw8:either:3.0.0'
 ```
 
 ## Usage
