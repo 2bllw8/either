@@ -101,7 +101,7 @@ publishing {
             }
             pom {
                 name = 'Either'
-                description = 'Implementation of the Either type for Java 8+'
+                description = 'Implementation of the Either and Try types for Java 8+'
                 url = 'https://github.com/2bllw8/either'
                 developers {
                     developer {
