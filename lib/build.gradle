@@ -19,7 +19,7 @@ dependencies {
 
 archivesBaseName = rootProject.name
 group = 'exe.bbllw8'
-version = '2.2.0'
+version = '3.0.0'
 
 java {
     withJavadocJar()
