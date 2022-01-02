@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  * default behavior in the case of failure.
  *
  * @author 2bllw8
- * @since 3.0
+ * @since 3.0.0
  */
 public abstract class Try<T> {
 
@@ -51,7 +51,7 @@ public abstract class Try<T> {
      * @hidden
      * @see Success
      * @see Failure
-     * @since 3.0
+     * @since 3.0.0
      */
     /* package */ Try() {
     }
@@ -59,35 +59,35 @@ public abstract class Try<T> {
     /**
      * @return Returns true if the {@link Try} is a {@link Failure},
      * false otherwise.
-     * @since 3.0
+     * @since 3.0.0
      */
     public abstract boolean isFailure();
 
     /**
      * @return Returns true if the {@link Try} is a {@link Success},
      * false otherwise.
-     * @since 3.0
+     * @since 3.0.0
      */
     public abstract boolean isSuccess();
 
     /**
      * @return Returns the value from this {@link Success} or throws
      * the exception if this is a {@link Failure}.
-     * @since 3.0
+     * @since 3.0.0
      */
     public abstract T get();
 
     /**
      * Applies the given function iff this is a {@link Success}.
      *
-     * @since 3.0
+     * @since 3.0.0
      */
     public abstract void forEach(Consumer<T> consumer);
 
     /**
      * @return Returns the given function applied to the value from this
      * {@link Success} or returns this if this is a {@link} Failure.
-     * @since 3.0
+     * @since 3.0.0
      */
     public abstract <U> Try<U> flatMap(Function<T, Try<U>> function);
 
@@ -95,14 +95,14 @@ public abstract class Try<T> {
      * Maps the given function to the value from this {@link Success}
      * or returns this if this is a {@link Failure}.
      *
-     * @since 3.0
+     * @since 3.0.0
      */
     public abstract <U> Try<U> map(Function<T, U> function);
 
     /**
      * Converts this to a {@link Failure} if the predicate is not satisfied.
      *
-     * @since 3.0
+     * @since 3.0.0
      */
     public abstract Try<T> filter(Function<T, Boolean> predicate);
 
@@ -111,7 +111,7 @@ public abstract class Try<T> {
      * otherwise returns this if this is a {@link Success}.
      * This is like {@link Try#flatMap} for the exception.
      *
-     * @since 3.0
+     * @since 3.0.0
      */
     public abstract Try<T> recoverWith(Function<Throwable, Try<T>> function);
 
@@ -120,7 +120,7 @@ public abstract class Try<T> {
      * otherwise returns this if this is a {@link Success}.
      * This is like {@link Try#map} for the exception.
      *
-     * @since 3.0
+     * @since 3.0.0
      */
     public abstract Try<T> recover(Function<Throwable, T> function);
 
@@ -128,7 +128,7 @@ public abstract class Try<T> {
      * @return Returns {@link Optional#empty()} if this is a
      * {@link Failure} or returns an optional containing the value
      * if this is a {@link Success}.
-     * @since 3.0
+     * @since 3.0.0
      */
     public abstract Optional<T> tOptional();
 
@@ -136,7 +136,7 @@ public abstract class Try<T> {
      * @return Returns {@link Left} with {@link Throwable} if this
      * is a {@link Failure}, otherwise returns {@link Right} with
      * {@link Success} value.
-     * @since 3.0
+     * @since 3.0.0
      */
     public abstract Either<Throwable, T> toEither();
 
@@ -146,7 +146,7 @@ public abstract class Try<T> {
      * If this is a {@link Success}, returns a {@link Failure}
      * containing an {@link UnsupportedOperationException}.
      *
-     * @since 3.0
+     * @since 3.0.0
      */
     public abstract Try<Throwable> failed();
 
@@ -157,7 +157,7 @@ public abstract class Try<T> {
      *
      * @param successFunction the function to apply if this is a {@link Failure}
      * @param failureFunction the function to apply if this is a {@link Success}
-     * @since 3.0
+     * @since 3.0.0
      */
     public abstract <U> Try<U> transform(Function<T, Try<U>> successFunction,
                                          Function<Throwable, Try<U>> failureFunction);
@@ -171,6 +171,7 @@ public abstract class Try<T> {
      * @param successFunction the function to apply if this is a {@link Failure}
      * @param failureFunction the function to apply if this is a {@link Success}
      * @return Returns the results of applying the function
+     * @since 3.0.0
      */
     public abstract <U> U fold(Function<Throwable, U> failureFunction,
                                Function<T, U> successFunction);
@@ -179,12 +180,13 @@ public abstract class Try<T> {
      * Applies the given function to the value from this
      * {@link Success} or returns this if this is a failure.
      *
-     * @since 3.0
+     * @since 3.0.0
      */
     public abstract T getOrElse(T fallback);
 
     /**
      * @return Returns this {@link Try} if it's a `Success` or the given `default` argument if this is a `Failure`.
+     * @since 3.0.0
      */
     public abstract Try<T> orElse(Try<T> fallback);
 
@@ -193,6 +195,8 @@ public abstract class Try<T> {
      * <code>Try&lt;Try&lt;T&gt;&gt;</code>,
      * into an un-nested {@link Try}, ie, a {@link Try} of type
      * <code>Try&lt;T&gt;</code>.
+     *
+     * @since 3.0.0
      */
     public static <T> Try<T> flatten(Try<Try<T>> tryTry) {
         return tryTry.isSuccess()
@@ -204,6 +208,8 @@ public abstract class Try<T> {
      * Constructs a {@link Try} from the execution of a given supplier.
      * This method will ensure any non-fatal exception is caught and a
      * {@link Failure} object is returned.
+     *
+     * @since 3.0.0
      */
     @SuppressWarnings({"PMD.AvoidCatchingThrowable"})
     public static <T> Try<T> from(Supplier<T> supplier) {

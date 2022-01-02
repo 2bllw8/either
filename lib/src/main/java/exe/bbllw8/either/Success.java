@@ -16,7 +16,7 @@ import java.util.function.Function;
  *
  * @param <T> Type of the held value
  * @author 2bllw8
- * @since 3.0
+ * @since 3.0.0
  */
 public final class Success<T> extends Try<T> {
     private transient final T value;

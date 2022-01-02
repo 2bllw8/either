@@ -25,7 +25,7 @@ import java.util.function.Supplier;
  * </pre>
  * @author 2bllw8
  * @see Try#from(Supplier)
- * @since 2.2
+ * @since 2.2.0
  */
 public final class CheckedException extends RuntimeException {
     private static final long serialVersionUID = 2896775411630760282L;

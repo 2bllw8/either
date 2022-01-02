@@ -16,7 +16,7 @@ import java.util.function.Function;
  * the failure point.
  *
  * @author 2bllw8
- * @since 3.0
+ * @since 3.0.0
  */
 public final class Failure<T> extends Try<T> {
     private transient final Throwable throwable;

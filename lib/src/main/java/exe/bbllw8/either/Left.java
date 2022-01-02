@@ -16,7 +16,7 @@ import java.util.stream.Stream;
  * @author 2bllw8
  * @see Either
  * @see Right
- * @since 2.0
+ * @since 2.0.0
  */
 public final class Left<A, B> extends Either<A, B> {
 
@@ -113,6 +113,8 @@ public final class Left<A, B> extends Either<A, B> {
 
     /**
      * Up-casts this {@link Left} with another right side type.
+     *
+     * @since 2.0.0
      */
     public <B1> Either<A, B1> withRight() {
         return new Left<>(value);
