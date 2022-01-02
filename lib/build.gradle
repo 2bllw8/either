@@ -56,7 +56,7 @@ if (localPropsFile.exists()) {
 
 pmd {
     consoleOutput = true
-    toolVersion = "6.38.0"
+    toolVersion = "6.41.0"
     ruleSets = [
             "category/java/errorprone.xml",
             "category/java/bestpractices.xml"
