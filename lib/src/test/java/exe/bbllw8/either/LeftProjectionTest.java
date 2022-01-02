@@ -40,6 +40,7 @@ public class LeftProjectionTest {
     public void forAll() {
         Assert.assertTrue(new Left<>(12).<Integer>withRight().left().forAll(x -> x > 10));
         Assert.assertFalse(new Left<>(7).<Integer>withRight().left().forAll(x -> x > 10));
+        Assert.assertTrue(new Right<>(7).<Integer>withLeft().left().forAll(x -> x > 10));
     }
 
     @Test

@@ -93,9 +93,9 @@ public class FailureTest {
 
     @Test
     public void transform() {
-        Assert.assertEquals(new Success<>(12), Try.from(() -> "12").transform(value -> Try.from(() -> Integer.parseInt(value)), t -> Try.from(() -> {
-            throw new CheckedException(t);
-        })));
+        Assert.assertEquals(new Success<>(2), new Failure<>(new Throwable()).transform(
+                v -> new Success<>(1),
+                t -> new Success<>(2)));
     }
 
     @Test
@@ -116,6 +116,24 @@ public class FailureTest {
         Assert.assertEquals(new Success<>("pancake"), Try.from(() -> {
             throw new ArrayIndexOutOfBoundsException();
         }).orElse(Try.from(() -> "pancake")));
+    }
+
+    @SuppressWarnings("AssertBetweenInconvertibleTypes")
+    @Test
+    public void consistentEquality() {
+        final NumberFormatException nfe = new NumberFormatException();
+
+        Assert.assertEquals(new Failure<>(nfe),
+                new Failure<>(nfe));
+        Assert.assertEquals(new Failure<>(nfe).hashCode(),
+                new Failure<>(nfe).hashCode());
+
+        Assert.assertNotEquals(new Failure<>(nfe),
+                new Success<>(nfe));
+        Assert.assertNotEquals(new Failure<>(nfe).hashCode(),
+                new Success<>(nfe).hashCode());
+
+        Assert.assertNotEquals(nfe, new Failure<>(nfe));
     }
 
     @Test

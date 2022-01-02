@@ -108,6 +108,23 @@ public class SuccessTest {
                 Try.from(() -> 1).orElse(Try.from(() -> 2)));
     }
 
+    @SuppressWarnings("AssertBetweenInconvertibleTypes")
+    @Test
+    public void consistentEquality() {
+        Assert.assertEquals(new Success<>(12),
+                new Success<>(10).map(x -> x + 2));
+        Assert.assertEquals(new Success<>(12).hashCode(),
+                new Success<>(10).map(x -> x + 2).hashCode());
+
+        final NumberFormatException nfe = new NumberFormatException();
+        Assert.assertNotEquals(new Success<>(nfe),
+                new Failure<>(nfe));
+        Assert.assertNotEquals(new Success<>(nfe).hashCode(),
+                new Failure<>(nfe).hashCode());
+
+        Assert.assertNotEquals(12, new Success<>(12));
+    }
+
     @Test
     public void stringRepresentation() {
         Assert.assertEquals("Success(something)",

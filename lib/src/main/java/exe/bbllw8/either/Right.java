@@ -134,7 +134,7 @@ public final class Right<A, B> extends Either<A, B> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(true, value);
+        return Objects.hash(Right.class, value);
     }
 
     @Override

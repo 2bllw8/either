@@ -119,7 +119,7 @@ public final class Failure<T> extends Try<T> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(throwable);
+        return Objects.hash(Failure.class, throwable);
     }
 
     @Override

@@ -122,7 +122,7 @@ public final class Success<T> extends Try<T> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(value);
+        return Objects.hash(Success.class, value);
     }
 
     @Override
