@@ -12,18 +12,22 @@ public class FailureTest {
 
     @Test
     public void isFailure() {
-        Assert.assertTrue(new Failure<>(new Throwable("pancake")).isFailure());
-        Assert.assertTrue(Try.from(() -> {
-            throw new IllegalStateException();
-        }).isFailure());
+        Assert.assertTrue("Should be a failure",
+                new Failure<>(new Throwable("pancake")).isFailure());
+        Assert.assertTrue("A supplier that throws an exception should be a failure",
+                Try.from(() -> {
+                    throw new IllegalStateException();
+                }).isFailure());
     }
 
     @Test
     public void isSuccess() {
-        Assert.assertFalse(new Failure<>(new Throwable("cookie")).isSuccess());
-        Assert.assertFalse(Try.from(() -> {
-            throw new IllegalStateException();
-        }).isSuccess());
+        Assert.assertFalse("Should not be a success",
+                new Failure<>(new Throwable("cookie")).isSuccess());
+        Assert.assertFalse("A supplier that throws an exception should not be a success",
+                Try.from(() -> {
+                    throw new IllegalStateException();
+                }).isSuccess());
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -37,85 +41,106 @@ public class FailureTest {
     public void forEach() {
         final StringBuilder sb = new StringBuilder("Hello ");
         new Failure<>(new Throwable()).forEach(sb::append);
-        Assert.assertEquals("Hello ", sb.toString());
+        Assert.assertEquals("Nothing should happen",
+                "Hello ",
+                sb.toString());
     }
 
     @Test
     public void flatMap() {
         final NullPointerException npe = new NullPointerException();
 
-        Assert.assertEquals(new Failure<>(npe), Try.from(() -> {
-            throw npe;
-        }).flatMap(value -> Try.from(value::toString)));
+        Assert.assertEquals("Should return a copy of itself from a flatMap invocation",
+                new Failure<>(npe), Try.from(() -> {
+                    throw npe;
+                }).flatMap(value -> Try.from(value::toString)));
     }
 
     @Test
     public void map() {
         final NullPointerException npe = new NullPointerException();
 
-        Assert.assertEquals(new Failure<>(npe), Try.from(() -> {
-            throw npe;
-        }).map(Object::hashCode));
+        Assert.assertEquals("Should return a copy of itself from a map invocation",
+                new Failure<>(npe), Try.from(() -> {
+                    throw npe;
+                }).map(Object::hashCode));
     }
 
     @Test
     public void filter() {
-        Assert.assertTrue(new Failure<Integer>(new Throwable()).filter(i -> i % 2 == 0).isFailure());
+        Assert.assertTrue("Should remain a failure regardless of the filter",
+                new Failure<Integer>(new Throwable()).filter(i -> i % 2 == 0).isFailure());
     }
 
     @Test
     public void recoverWith() {
-        Assert.assertEquals(new Success<>(1), new Failure<>(new Throwable("1")).recoverWith(t -> Try.from(() -> Integer.parseInt(t.getMessage()))));
+        Assert.assertEquals("Should be recovered with the result of the given function",
+                new Success<>(1),
+                new Failure<>(new Throwable("1"))
+                        .recoverWith(t -> Try.from(() -> Integer.parseInt(t.getMessage()))));
     }
 
     @Test
     public void recover() {
-        Assert.assertEquals(new Success<>(1), new Failure<>(new Throwable("1")).recover(t -> Integer.parseInt(t.getMessage())));
+        Assert.assertEquals("Should be recovered with the result of the given function",
+                new Success<>(1),
+                new Failure<>(new Throwable("1")).recover(t -> Integer.parseInt(t.getMessage())));
     }
 
     @Test
     public void toOptional() {
-        Assert.assertEquals(Optional.empty(), new Failure<>(new Throwable()).tOptional());
+        Assert.assertEquals("Should be mapped to an empty Optional",
+                Optional.empty(),
+                new Failure<>(new Throwable()).tOptional());
     }
 
     @Test
     public void toEither() {
         final IllegalAccessException iae = new IllegalAccessException();
 
-        Assert.assertEquals(new Left<>(iae),
+        Assert.assertEquals("Should be mapped to a Left containing the throwable",
+                new Left<>(iae),
                 new Failure<>(iae).toEither());
     }
 
     @Test
     public void failed() {
-        Assert.assertTrue(new Failure<Integer>(new Throwable()).failed().isSuccess());
+        Assert.assertTrue("Should return a Success when applying the failed method",
+                new Failure<Integer>(new Throwable()).failed().isSuccess());
     }
 
     @Test
     public void transform() {
-        Assert.assertEquals(new Success<>(2), new Failure<>(new Throwable()).transform(
-                v -> new Success<>(1),
-                t -> new Success<>(2)));
+        Assert.assertEquals("The correct transformation should be applied",
+                new Success<>(2),
+                new Failure<>(new Throwable()).transform(v -> new Success<>(1),
+                        t -> new Success<>(2)));
     }
 
     @Test
     public void fold() {
-        Assert.assertEquals("Operation failed with error: Not enough pancakes", Try.from(() -> {
-            throw new IllegalStateException("Not enough pancakes");
-        }).fold(t -> "Operation failed with error: " + t.getMessage(),
-                value -> "Operation completed with result: " + value));
+        Assert.assertEquals("The correct folding function should be applied",
+                "Operation failed with error: Not enough pancakes",
+                Try.from(() -> {
+                    throw new IllegalStateException("Not enough pancakes");
+                }).fold(t -> "Operation failed with error: " + t.getMessage(),
+                        value -> "Operation completed with result: " + value));
     }
 
     @Test
     public void getOrElse() {
-        Assert.assertEquals("something", new Failure<>(new Throwable()).getOrElse("something"));
+        Assert.assertEquals("The fallback value should be returned",
+                "something",
+                new Failure<>(new Throwable()).getOrElse("something"));
     }
 
     @Test
     public void orElse() {
-        Assert.assertEquals(new Success<>("pancake"), Try.from(() -> {
-            throw new ArrayIndexOutOfBoundsException();
-        }).orElse(Try.from(() -> "pancake")));
+        Assert.assertEquals("The fallback result should be returned",
+                new Success<>("pancake"),
+                Try.from(() -> {
+                    throw new ArrayIndexOutOfBoundsException();
+                }).orElse(Try.from(() -> "pancake")));
     }
 
     @SuppressWarnings("AssertBetweenInconvertibleTypes")
@@ -123,23 +148,32 @@ public class FailureTest {
     public void consistentEquality() {
         final NumberFormatException nfe = new NumberFormatException();
 
-        Assert.assertEquals(new Failure<>(nfe),
+        Assert.assertEquals("Equal values should be equal",
+                new Failure<>(nfe),
                 new Failure<>(nfe));
-        Assert.assertEquals(new Failure<>(nfe).hashCode(),
+        Assert.assertEquals("Equal values should have the same hashCode",
+                new Failure<>(nfe).hashCode(),
                 new Failure<>(nfe).hashCode());
 
-        Assert.assertNotEquals(new Failure<>(nfe),
+        Assert.assertNotEquals("Should not be equal of a Success with the same value",
+                new Failure<>(nfe),
                 new Success<>(nfe));
-        Assert.assertNotEquals(new Failure<>(nfe).hashCode(),
+        Assert.assertNotEquals(
+                "Should not have the same hashCode of a Success with the same value",
+                new Failure<>(nfe).hashCode(),
                 new Success<>(nfe).hashCode());
 
-        Assert.assertNotEquals(nfe, new Failure<>(nfe));
+        Assert.assertNotEquals("Should not be equal to its value",
+                nfe,
+                new Failure<>(nfe));
     }
 
     @Test
     public void stringRepresentation() {
-        Assert.assertEquals("Failure(java.lang.IllegalStateException: something)", Try.from(() -> {
-            throw new IllegalStateException("something");
-        }).toString());
+        Assert.assertEquals("The string representation should match the documentation",
+                "Failure(java.lang.IllegalStateException: something)",
+                Try.from(() -> {
+                    throw new IllegalStateException("something");
+                }).toString());
     }
 }
