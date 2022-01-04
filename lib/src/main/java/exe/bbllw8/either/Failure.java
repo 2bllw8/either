@@ -105,6 +105,15 @@ public final class Failure<T> extends Try<T> {
         return fallback;
     }
 
+    /**
+     * Up-casts this {@link Failure} with another success value type.
+     *
+     * @since 3.1.0
+     */
+    public <X> Try<X> withType() {
+        return new Failure<>(throwable);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

@@ -199,9 +199,7 @@ public abstract class Try<T> {
      * @since 3.0.0
      */
     public static <T> Try<T> flatten(Try<Try<T>> tryTry) {
-        return tryTry.isSuccess()
-                ? tryTry.get()
-                : (Failure<T>) tryTry;
+        return tryTry.isSuccess() ? tryTry.get() : ((Failure<?>) tryTry).withType();
     }
 
     /**
