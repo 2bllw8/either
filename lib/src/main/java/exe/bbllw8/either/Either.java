@@ -7,7 +7,6 @@ package exe.bbllw8.either;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
@@ -36,7 +35,6 @@ public abstract class Either<A, B> {
      * <ul>
      *     <li>{@link Left}</li>
      *     <li>{@link Right}</li>
-     *     <li>{@link Either#tryCatch(Supplier, Class)}</li>
      * </ul>
      *
      * @hidden
@@ -237,66 +235,6 @@ public abstract class Either<A, B> {
         } else {
             // Should never happen
             throw new IllegalStateException();
-        }
-    }
-
-    /**
-     * @return An Either that is {@link Right} with the return value of the given function
-     * or {@link Left} with an exception thrown during the execution of the function.
-     * @since 2.0.0
-     * @deprecated Use {@link Try#from(Supplier)}
-     */
-    @Deprecated
-    public static <A extends Exception, B> Either<A, B> fromTry(Supplier<B> supplier, Class<A> leftClass) {
-        return tryCatch(supplier, leftClass);
-    }
-
-    /**
-     * Returns An Either that is {@link Right} with the return value of the given function
-     * or {@link Left} with an {@link Throwable} thrown during the execution of the function.
-     * In order to work around checked expressions handling of the Java Programming language,
-     * it is possible to wrap exceptions in a {@link CheckedException} instance.
-     *
-     * @since 2.2.0
-     * @deprecated Use {@link Try#from(Supplier)} and {@link Try#toEither()}
-     */
-    @Deprecated
-    @SuppressWarnings({"PMD.AvoidCatchingThrowable", "unchecked"})
-    public static <A extends Throwable, B> Either<A, B> tryCatch(Supplier<B> supplier, Class<A> leftClass) {
-        final Try<B> tryObj = Try.from(supplier);
-        if (tryObj.isSuccess()) {
-            return new Right<>(tryObj.get());
-        } else {
-            final Throwable t = tryObj.failed().get();
-            if (leftClass.isAssignableFrom(t.getClass())) {
-                return new Left<>((A) t);
-            } else {
-                // Unexpected
-                throw new IllegalStateException(t);
-            }
-        }
-    }
-
-    /**
-     * Returns an Either that is {@link Right} with the return value of a given supplier
-     * or {@link Left} with the return value of a given function that takes a {@link Throwable}
-     * thrown during the execution of the right value supplier as its argument.
-     * In order to work around checked expressions handling of the Java Programming language,
-     * it is possible to wrap exceptions in a {@link CheckedException} instance.
-     *
-     * @since 2.2.0
-     * @deprecated Use {@link Try#from(Supplier)}
-     */
-    @Deprecated
-    @SuppressWarnings("PMD.AvoidCatchingThrowable")
-    public static <A, B> Either<A, B> tryCatch(Supplier<B> supplier,
-                                               Function<Throwable, A> fe) {
-        final Try<B> tryObj = Try.from(supplier);
-        if (tryObj.isSuccess()) {
-            return new Right<>(tryObj.get());
-        } else {
-            final Throwable t = tryObj.failed().get();
-            return new Left<>(fe.apply(t));
         }
     }
 }
