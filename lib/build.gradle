@@ -34,6 +34,10 @@ javadoc {
     options.addStringOption 'Xdoclint:all,-missing', '-quiet'
 }
 
+compileJava {
+    options.compilerArgs << '-Xlint:unchecked'
+}
+
 tasks.named('jar') {
     manifest {
         attributes(
