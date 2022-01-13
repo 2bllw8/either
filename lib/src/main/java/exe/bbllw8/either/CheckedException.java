@@ -7,7 +7,7 @@ package exe.bbllw8.either;
 import java.util.function.Supplier;
 
 /**
- * An CheckedException instance is used to <i>catch</i>
+ * A CheckedException instance is used to <i>catch</i>
  * checked Exceptions for usage in {@link Try#from(Supplier)}.
  *
  * <pre>
