@@ -85,6 +85,15 @@ public abstract class Try<T> {
     public abstract void forEach(Consumer<T> consumer);
 
     /**
+     * Applies a given side-effecting function depending on whether
+     * this is a {@link Success} or a {@link Failure}.
+     *
+     * @since 3.1.0
+     */
+    public abstract void forEach(Consumer<T> successConsumer,
+                                 Consumer<Throwable> failureConsumer);
+
+    /**
      * @return Returns the given function applied to the value from this
      * {@link Success} or returns this if this is a {@link} Failure.
      * @since 3.0.0

@@ -37,6 +37,17 @@ public class SuccessTest {
     }
 
     @Test
+    public void biForEach() {
+        final StringBuilder sb = new StringBuilder();
+        new Success<>(0).forEach(
+                sb::append,
+                t -> sb.append(t.getMessage()));
+        Assert.assertEquals("Should execute the right function",
+                "0",
+                sb.toString());
+    }
+
+    @Test
     public void flatMap() {
         Assert.assertEquals("The function should be applied",
                 new Success<>(12),

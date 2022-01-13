@@ -47,6 +47,17 @@ public class FailureTest {
     }
 
     @Test
+    public void biForEach() {
+        final StringBuilder sb = new StringBuilder();
+        new Failure<Integer>(new Throwable("dandelion")).forEach(
+                sb::append,
+                t -> sb.append(t.getMessage()));
+        Assert.assertEquals("Should execute the right function",
+                "dandelion",
+                sb.toString());
+    }
+
+    @Test
     public void flatMap() {
         final NullPointerException npe = new NullPointerException();
 

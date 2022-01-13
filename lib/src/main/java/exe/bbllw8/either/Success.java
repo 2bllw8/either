@@ -46,6 +46,11 @@ public final class Success<T> extends Try<T> {
     }
 
     @Override
+    public void forEach(Consumer<T> successConsumer, Consumer<Throwable> failureConsumer) {
+        successConsumer.accept(value);
+    }
+
+    @Override
     public <U> Try<U> flatMap(Function<T, Try<U>> function) {
         return function.apply(value);
     }
