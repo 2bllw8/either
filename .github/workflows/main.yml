@@ -7,10 +7,12 @@ on:
     paths-ignore:
       - '**.md'
       - '.gitignore'
+      - 'version.sh'
   pull_request:
     paths-ignore:
       - '**.md'
       - '.gitignore'
+      - 'version.sh'
 
 jobs:
   build:
