@@ -30,7 +30,7 @@ public abstract class LeftProjection<A, B> {
      * application of the given function to the {@link Left} value.
      * @since 2.0.0
      */
-    public abstract boolean exists(Function<? super A, Boolean> predicate);
+    public abstract boolean exists(Function<A, Boolean> predicate);
 
     /**
      * @return Returns {@link Optional#empty()} if this is a {@link Right}
@@ -38,27 +38,27 @@ public abstract class LeftProjection<A, B> {
      * otherwise, returns a {@link Left}.
      * @since 2.0.0
      */
-    public abstract Optional<Either<A, B>> filterToOptional(Function<? super A, Boolean> predicate);
+    public abstract Optional<Either<A, B>> filterToOptional(Function<A, Boolean> predicate);
 
     /**
      * @return Binds the given function across {@link Left}.
      * @since 2.0.0
      */
-    public abstract <A1> Either<A1, B> flatMap(Function<? super A, Either<A1, B>> function);
+    public abstract <A1> Either<A1, B> flatMap(Function<A, Either<A1, B>> function);
 
     /**
      * @return Returns true if {@link Right} or returns the result of
      * the application of the given function to the Right value.
      * @since 2.0.0
      */
-    public abstract boolean forAll(Function<? super A, Boolean> function);
+    public abstract boolean forAll(Function<A, Boolean> function);
 
     /**
      * Executes the given side-effecting function if this is a {@link Left}.
      *
      * @since 2.0.0
      */
-    public abstract void forEach(Consumer<? super A> consumer);
+    public abstract void forEach(Consumer<A> consumer);
 
     /**
      * @return Returns the value from this {@link Left} or the given
@@ -72,7 +72,7 @@ public abstract class LeftProjection<A, B> {
      *
      * @since 2.0.0
      */
-    public abstract <A1> Either<A1, B> map(Function<? super A, ? extends A1> function);
+    public abstract <A1> Either<A1, B> map(Function<A, A1> function);
 
     /**
      * @return Returns a stream containing the {@link Left} value if

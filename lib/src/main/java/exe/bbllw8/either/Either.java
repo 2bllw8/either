@@ -73,7 +73,7 @@ public abstract class Either<A, B> {
      * of the given predicate to the {@link Right} value.
      * @since 2.0.0
      */
-    public abstract boolean exists(Function<? super B, Boolean> predicate);
+    public abstract boolean exists(Function<B, Boolean> predicate);
 
     /**
      * @return Returns {@link Right} with the existing value of {@link Right} if this is a {@link Right}
@@ -83,7 +83,7 @@ public abstract class Either<A, B> {
      * {@link Left} with the existing value of {@link Left} if this is a {@link Left}.
      * @since 2.0.0
      */
-    public abstract Either<A, B> filterOrElse(Function<? super B, Boolean> predicate, A fallback);
+    public abstract Either<A, B> filterOrElse(Function<B, Boolean> predicate, A fallback);
 
     /**
      * Binds the given function across {@link Right}.
@@ -91,7 +91,7 @@ public abstract class Either<A, B> {
      * @param function The function to bind across {@link Right}.
      * @since 2.0.0
      */
-    public abstract <B1> Either<A, B1> flatMap(Function<? super B, Either<A, B1>> function);
+    public abstract <B1> Either<A, B1> flatMap(Function<B, Either<A, B1>> function);
 
     /**
      * Applies functionLeft if this is a {@link Left} or
@@ -100,21 +100,21 @@ public abstract class Either<A, B> {
      * @return Returns the results of applying the function.
      * @since 2.0.0
      */
-    public abstract <C> C fold(Function<? super A, ? extends C> functionLeft, Function<B, C> functionRight);
+    public abstract <C> C fold(Function<A, C> functionLeft, Function<B, C> functionRight);
 
     /**
      * @return Returns true if {@link Left} or returns the result of the application
      * of the given predicate to the {@link Right} value.
      * @since 2.0.0
      */
-    public abstract boolean forAll(Function<? super B, Boolean> predicate);
+    public abstract boolean forAll(Function<B, Boolean> predicate);
 
     /**
      * Executes the given side-effecting function if this is a {@link Right}.
      *
      * @since 2.0.0
      */
-    public abstract void forEach(Consumer<? super B> consumer);
+    public abstract void forEach(Consumer<B> consumer);
 
     /**
      * Executes a given side-effecting function depending on whether
@@ -122,8 +122,7 @@ public abstract class Either<A, B> {
      *
      * @since 2.1.0
      */
-    public abstract void forEach(Consumer<? super A> consumerLeft,
-                                 Consumer<? super B> consumerRight);
+    public abstract void forEach(Consumer<A> consumerLeft, Consumer<B> consumerRight);
 
     /**
      * @return Returns the value from this {@link Right} or the given
@@ -137,7 +136,7 @@ public abstract class Either<A, B> {
      *
      * @since 2.0.0
      */
-    public abstract <C> Either<A, C> map(Function<? super B, ? extends C> function);
+    public abstract <C> Either<A, C> map(Function<B, C> function);
 
     /**
      * @return Returns this {@link Right} or the given argument if this

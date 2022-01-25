@@ -42,37 +42,37 @@ public final class Left<A, B> extends Either<A, B> {
     }
 
     @Override
-    public boolean exists(Function<? super B, Boolean> predicate) {
+    public boolean exists(Function<B, Boolean> predicate) {
         return false;
     }
 
     @Override
-    public Either<A, B> filterOrElse(Function<? super B, Boolean> predicate, A fallback) {
+    public Either<A, B> filterOrElse(Function<B, Boolean> predicate, A fallback) {
         return this;
     }
 
     @Override
-    public <B1> Either<A, B1> flatMap(Function<? super B, Either<A, B1>> function) {
+    public <B1> Either<A, B1> flatMap(Function<B, Either<A, B1>> function) {
         return withRight();
     }
 
     @Override
-    public <C> C fold(Function<? super A, ? extends C> functionLeft, Function<B, C> functionRight) {
+    public <C> C fold(Function<A, C> functionLeft, Function<B, C> functionRight) {
         return functionLeft.apply(value);
     }
 
     @Override
-    public boolean forAll(Function<? super B, Boolean> predicate) {
+    public boolean forAll(Function<B, Boolean> predicate) {
         return true;
     }
 
     @Override
-    public void forEach(Consumer<? super B> consumer) {
+    public void forEach(Consumer<B> consumer) {
         // Do nothing
     }
 
     @Override
-    public void forEach(Consumer<? super A> consumerLeft, Consumer<? super B> consumerRight) {
+    public void forEach(Consumer<A> consumerLeft, Consumer<B> consumerRight) {
         consumerLeft.accept(value);
     }
 
@@ -82,7 +82,7 @@ public final class Left<A, B> extends Either<A, B> {
     }
 
     @Override
-    public <C> Either<A, C> map(Function<? super B, ? extends C> function) {
+    public <C> Either<A, C> map(Function<B, C> function) {
         return withRight();
     }
 
@@ -156,29 +156,29 @@ public final class Left<A, B> extends Either<A, B> {
 
     private final class LeftToLeftProjection extends LeftProjection<A, B> {
         @Override
-        public boolean exists(Function<? super A, Boolean> predicate) {
+        public boolean exists(Function<A, Boolean> predicate) {
             return predicate.apply(value);
         }
 
         @Override
-        public Optional<Either<A, B>> filterToOptional(Function<? super A, Boolean> predicate) {
+        public Optional<Either<A, B>> filterToOptional(Function<A, Boolean> predicate) {
             return predicate.apply(value)
                     ? Optional.of(Left.this)
                     : Optional.empty();
         }
 
         @Override
-        public <A1> Either<A1, B> flatMap(Function<? super A, Either<A1, B>> function) {
+        public <A1> Either<A1, B> flatMap(Function<A, Either<A1, B>> function) {
             return function.apply(value);
         }
 
         @Override
-        public boolean forAll(Function<? super A, Boolean> function) {
+        public boolean forAll(Function<A, Boolean> function) {
             return function.apply(value);
         }
 
         @Override
-        public void forEach(Consumer<? super A> consumer) {
+        public void forEach(Consumer<A> consumer) {
             consumer.accept(value);
         }
 
@@ -188,7 +188,7 @@ public final class Left<A, B> extends Either<A, B> {
         }
 
         @Override
-        public <A1> Either<A1, B> map(Function<? super A, ? extends A1> function) {
+        public <A1> Either<A1, B> map(Function<A, A1> function) {
             return new Left<>(function.apply(value));
         }
 
