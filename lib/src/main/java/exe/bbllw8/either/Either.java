@@ -24,7 +24,7 @@ import java.util.stream.Stream;
  * @param <A> Type of the left value
  * @param <B> Type of the right value
  * @author 2bllw8
- * @since 1.0
+ * @since 1.0.0
  */
 public abstract class Either<A, B> {
 
