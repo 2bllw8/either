@@ -7,7 +7,6 @@ package exe.bbllw8.either;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * The {@link Try} type represents a computation that may either result in an exception, or return a
@@ -40,7 +39,7 @@ public abstract class Try<T> {
      * <ul>
      *     <li>{@link Success}</li>
      *     <li>{@link Failure}</li>
-     *     <li>{@link Try#from(Supplier)}</li>
+     *     <li>{@link Try#from(CheckedSupplier)}</li>
      * </ul>
      *
      * @hidden
@@ -205,36 +204,19 @@ public abstract class Try<T> {
      *
      * @since 3.0.0
      */
-    @SuppressWarnings({"PMD.AvoidCatchingThrowable"})
-    public static <T> Try<T> from(Supplier<T> supplier) {
+    @SuppressWarnings({
+            "deprecation",
+            "PMD.AvoidCatchingThrowable",
+    })
+    public static <T> Try<T> from(CheckedSupplier<T> supplier) {
+        //noinspection deprecation
         try {
             return new Success<>(supplier.get());
-        } catch (CheckedException e) {
-            // Wrapped checked exception
-            final Throwable t = e.getCause();
-            if (isFatal(t)) {
-                // Fatal
-                throw e;
-            } else {
-                return new Failure<>(t);
-            }
+        } catch (CheckedException t) {
+            // TODO: remove this clause when CheckedException is removed
+            return new Failure<>(t.getCause());
         } catch (Throwable t) {
-            if (isFatal(t)) {
-                // Fatal
-                throw t;
-            } else {
-                return new Failure<>(t);
-            }
+            return new Failure<>(t);
         }
-    }
-
-    /**
-     * @return Returns whether the given throwable is fatal.
-     */
-    private static boolean isFatal(Throwable t) {
-        return t instanceof VirtualMachineError
-                || t instanceof ThreadDeath
-                || t instanceof InterruptedException
-                || t instanceof LinkageError;
     }
 }

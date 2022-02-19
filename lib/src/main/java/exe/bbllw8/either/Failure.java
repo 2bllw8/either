@@ -21,6 +21,7 @@ public final class Failure<T> extends Try<T> {
     private transient final Throwable throwable;
 
     public Failure(Throwable throwable) {
+        assertNotFatal(throwable);
         this.throwable = throwable;
     }
 
@@ -139,5 +140,18 @@ public final class Failure<T> extends Try<T> {
     @Override
     public String toString() {
         return "Failure(" + throwable + ')';
+    }
+
+    /**
+     * Assert that the given throwable is not fatal.
+     */
+    private static void assertNotFatal(Throwable t) {
+        if (t instanceof VirtualMachineError) {
+            throw (VirtualMachineError) t;
+        } else if (t instanceof ThreadDeath) {
+            throw (ThreadDeath) t;
+        } else if (t instanceof LinkageError) {
+            throw (LinkageError) t;
+        }
     }
 }

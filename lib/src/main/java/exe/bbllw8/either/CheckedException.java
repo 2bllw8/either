@@ -4,11 +4,9 @@
  */
 package exe.bbllw8.either;
 
-import java.util.function.Supplier;
-
 /**
  * A CheckedException instance is used to <i>catch</i> checked Exceptions for usage in {@link
- * Try#from(Supplier)}.
+ * Try#from(CheckedSupplier)}.
  *
  * <pre>
  * public class Example {
@@ -25,9 +23,11 @@ import java.util.function.Supplier;
  * </pre>
  *
  * @author 2bllw8
- * @see Try#from(Supplier)
+ * @see Try#from(CheckedSupplier)
  * @since 2.2.0
+ * @deprecated Use {@link CheckedSupplier} instead of thowing wrapped exceptions.
  */
+@Deprecated
 public final class CheckedException extends RuntimeException {
 
     private static final long serialVersionUID = 2896775411630760282L;

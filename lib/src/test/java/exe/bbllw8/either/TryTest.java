@@ -28,7 +28,7 @@ public class TryTest {
     public void from() {
         Assert.assertTrue("A supplier throwing an exception should return a failure",
                 Try.from(() -> {
-                    throw new CheckedException(new Throwable());
+                    throw new Throwable();
                 }).isFailure());
         Assert.assertTrue("A supplier throwing an exception should return a failure",
                 Try.from(() -> Integer.parseInt("-")).isFailure());

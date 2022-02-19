@@ -108,7 +108,7 @@ public class SuccessTest {
                 new Success<>(12),
                 Try.from(() -> "12").transform(value -> Try.from(() -> Integer.parseInt(value)),
                         t -> Try.from(() -> {
-                            throw new CheckedException(t);
+                            throw t;
                         })));
     }
 

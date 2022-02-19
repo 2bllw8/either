@@ -34,9 +34,7 @@ implementation 'io.github.2bllw8:either:3.1.0'
 ## Usage
 
 ```java
-import exe.bbllw8.either.CheckedException;
 import exe.bbllw8.either.Try;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -45,14 +43,10 @@ import java.util.stream.Collectors;
 public class Main {
 
     public static void main(String[] args) {
-        Arrays.stream(args).map((String arg) -> Try.from(() -> {
-                            try {
-                                return Files.lines(Paths.get(arg))
-                                        .collect(Collectors.joining("\n"));
-                            } catch (IOException e) {
-                                throw new CheckedException(e);
-                            }
-                        }).filter(text -> text.length() > 2)
+        Arrays.stream(args).map((String arg) -> Try.from(() ->
+                                Files.lines(Paths.get(arg))
+                                        .collect(Collectors.joining("\n")))
+                        .filter(text -> text.length() > 2)
                         .map(text -> text.substring(2))
                         .flatMap(text -> Try.from(() -> Integer.parseInt(text)))
                         .toEither()

@@ -187,4 +187,34 @@ public class FailureTest {
                     throw new IllegalStateException("something");
                 }).toString());
     }
+
+    @Test
+    public void multipleThrow() {
+        Assert.assertTrue("Multiple thrown classes are handled (throwable #1)",
+                Try.from(() -> new IntToBoolean().convert(2))
+                        .recover(t -> t instanceof IllegalAccessException)
+                        .get());
+        Assert.assertTrue("Multiple thrown classes are handled (throwable #2)",
+                Try.from(() -> new IntToBoolean().convert(3))
+                        .recover(t -> t instanceof IllegalArgumentException)
+                        .get());
+    }
+
+    private static class IntToBoolean {
+
+        boolean convert(int result) throws IllegalAccessException, IllegalArgumentException {
+            switch (result) {
+                case 0:
+                    return false;
+                case 1:
+                    return true;
+                case 2:
+                    // You have no authority to discover the dark truth about
+                    // the third hidden boolean value
+                    throw new IllegalAccessException();
+                default:
+                    throw new IllegalArgumentException();
+            }
+        }
+    }
 }
