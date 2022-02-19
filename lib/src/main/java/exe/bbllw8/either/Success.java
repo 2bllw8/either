@@ -11,14 +11,14 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * A successful result of a computation wrapped in
- * a {@link Try} type.
+ * A successful result of a computation wrapped in a {@link Try} type.
  *
  * @param <T> Type of the held value
  * @author 2bllw8
  * @since 3.0.0
  */
 public final class Success<T> extends Try<T> {
+
     private transient final T value;
 
     public Success(T value) {
@@ -65,7 +65,7 @@ public final class Success<T> extends Try<T> {
         return predicate.apply(value)
                 ? this
                 : new Failure<>(new NoSuchElementException(
-                "Predicate does not hold for " + value));
+                        "Predicate does not hold for " + value));
     }
 
     @Override
@@ -94,7 +94,8 @@ public final class Success<T> extends Try<T> {
     }
 
     @Override
-    public <U> Try<U> transform(Function<T, Try<U>> successFunction, Function<Throwable, Try<U>> failureFunction) {
+    public <U> Try<U> transform(Function<T, Try<U>> successFunction,
+            Function<Throwable, Try<U>> failureFunction) {
         return successFunction.apply(value);
     }
 

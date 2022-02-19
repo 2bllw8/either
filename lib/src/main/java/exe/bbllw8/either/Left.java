@@ -155,6 +155,7 @@ public final class Left<A, B> extends Either<A, B> {
     }
 
     private final class LeftToLeftProjection extends LeftProjection<A, B> {
+
         @Override
         public boolean exists(Function<A, Boolean> predicate) {
             return predicate.apply(value);

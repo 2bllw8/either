@@ -157,6 +157,7 @@ public final class Right<A, B> extends Either<A, B> {
     }
 
     private final class RightToLeftProjection extends LeftProjection<A, B> {
+
         @Override
         public boolean exists(Function<A, Boolean> predicate) {
             return false;

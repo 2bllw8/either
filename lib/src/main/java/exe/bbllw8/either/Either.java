@@ -58,9 +58,8 @@ public abstract class Either<A, B> {
     public abstract boolean isRight();
 
     /**
-     * Returns true if this is a {@link Right} and its value is
-     * equal to elem (as determined by {@link Object#equals(Object)}),
-     * returns false otherwise.
+     * Returns true if this is a {@link Right} and its value is equal to elem (as determined by
+     * {@link Object#equals(Object)}), returns false otherwise.
      *
      * @param elem The element to test.
      * @return <code>true</code> if this is a {@link Right} value equal to <code>elem</code>
@@ -69,18 +68,18 @@ public abstract class Either<A, B> {
     public abstract boolean contains(B elem);
 
     /**
-     * @return Returns false if {@link Left} or returns the result of the application
-     * of the given predicate to the {@link Right} value.
+     * @return Returns false if {@link Left} or returns the result of the application of the given
+     * predicate to the {@link Right} value.
      * @since 2.0.0
      */
     public abstract boolean exists(Function<B, Boolean> predicate);
 
     /**
-     * @return Returns {@link Right} with the existing value of {@link Right} if this is a {@link Right}
-     * and the given predicate p holds for the right value, or an instance of
-     * {@link Left} with fallback as argument if this is a {@link Right}
-     * and the given predicate does not hold for the right value, or an instance of
-     * {@link Left} with the existing value of {@link Left} if this is a {@link Left}.
+     * @return Returns {@link Right} with the existing value of {@link Right} if this is a {@link
+     * Right} and the given predicate p holds for the right value, or an instance of {@link Left}
+     * with fallback as argument if this is a {@link Right} and the given predicate does not hold
+     * for the right value, or an instance of {@link Left} with the existing value of {@link Left}
+     * if this is a {@link Left}.
      * @since 2.0.0
      */
     public abstract Either<A, B> filterOrElse(Function<B, Boolean> predicate, A fallback);
@@ -94,8 +93,7 @@ public abstract class Either<A, B> {
     public abstract <B1> Either<A, B1> flatMap(Function<B, Either<A, B1>> function);
 
     /**
-     * Applies functionLeft if this is a {@link Left} or
-     * functionRight if this is a {@link Right}.
+     * Applies functionLeft if this is a {@link Left} or functionRight if this is a {@link Right}.
      *
      * @return Returns the results of applying the function.
      * @since 2.0.0
@@ -103,8 +101,8 @@ public abstract class Either<A, B> {
     public abstract <C> C fold(Function<A, C> functionLeft, Function<B, C> functionRight);
 
     /**
-     * @return Returns true if {@link Left} or returns the result of the application
-     * of the given predicate to the {@link Right} value.
+     * @return Returns true if {@link Left} or returns the result of the application of the given
+     * predicate to the {@link Right} value.
      * @since 2.0.0
      */
     public abstract boolean forAll(Function<B, Boolean> predicate);
@@ -117,16 +115,16 @@ public abstract class Either<A, B> {
     public abstract void forEach(Consumer<B> consumer);
 
     /**
-     * Executes a given side-effecting function depending on whether
-     * this is a {@link Left} or {@link Right}.
+     * Executes a given side-effecting function depending on whether this is a {@link Left} or
+     * {@link Right}.
      *
      * @since 2.1.0
      */
     public abstract void forEach(Consumer<A> consumerLeft, Consumer<B> consumerRight);
 
     /**
-     * @return Returns the value from this {@link Right} or the given
-     * fallback if this is a {@link Left}.
+     * @return Returns the value from this {@link Right} or the given fallback if this is a {@link
+     * Left}.
      * @since 2.0.0
      */
     public abstract B getOrElse(B fallback);
@@ -139,15 +137,14 @@ public abstract class Either<A, B> {
     public abstract <C> Either<A, C> map(Function<B, C> function);
 
     /**
-     * @return Returns this {@link Right} or the given argument if this
-     * is a {@link Left}.
+     * @return Returns this {@link Right} or the given argument if this is a {@link Left}.
      * @since 2.0.0
      */
     public abstract Either<A, B> orElse(Either<A, B> alternative);
 
     /**
-     * Allows for-comprehensions over the left side of Either instances,
-     * reversing the usual right-bias of the Either class.
+     * Allows for-comprehensions over the left side of Either instances, reversing the usual
+     * right-bias of the Either class.
      *
      * @return Projects this Either as a {@link Left}.
      * @since 2.0.0
@@ -155,15 +152,15 @@ public abstract class Either<A, B> {
     public abstract LeftProjection<A, B> left();
 
     /**
-     * @return Returns a stream containing the right value if this is a {@link Right},
-     * otherwise, {@link Stream#empty()}.
+     * @return Returns a stream containing the right value if this is a {@link Right}, otherwise,
+     * {@link Stream#empty()}.
      * @since 2.0.0
      */
     public abstract Stream<B> stream();
 
     /**
-     * @return If this is a {@link Left}, then returns the left value in
-     * {@link Right} or vice versa.
+     * @return If this is a {@link Left}, then returns the left value in {@link Right} or vice
+     * versa.
      * @since 1.0.0
      */
     public abstract Either<B, A> swap();
@@ -176,8 +173,8 @@ public abstract class Either<A, B> {
     public abstract Optional<B> toOptional();
 
     /**
-     * @return Returns the right value if the given argument is {@link Right} or
-     * its value if it is {@link Left}.
+     * @return Returns the right value if the given argument is {@link Right} or its value if it is
+     * {@link Left}.
      * @since 2.0.0
      */
     public static <A, B> Either<A, B> flatten(Either<A, Either<A, B>> either) {

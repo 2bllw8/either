@@ -10,15 +10,14 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * A failure that occurred during a computation
- * wrapped in a {@link Try} type.
- * Holds a {@link Throwable} object that represents
- * the failure point.
+ * A failure that occurred during a computation wrapped in a {@link Try} type. Holds a {@link
+ * Throwable} object that represents the failure point.
  *
  * @author 2bllw8
  * @since 3.0.0
  */
 public final class Failure<T> extends Try<T> {
+
     private transient final Throwable throwable;
 
     public Failure(Throwable throwable) {
@@ -91,7 +90,8 @@ public final class Failure<T> extends Try<T> {
     }
 
     @Override
-    public <U> Try<U> transform(Function<T, Try<U>> successFunction, Function<Throwable, Try<U>> failureFunction) {
+    public <U> Try<U> transform(Function<T, Try<U>> successFunction,
+            Function<Throwable, Try<U>> failureFunction) {
         return failureFunction.apply(throwable);
     }
 
