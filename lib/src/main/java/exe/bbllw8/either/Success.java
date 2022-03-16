@@ -56,7 +56,7 @@ public final class Success<T> extends Try<T> {
     }
 
     @Override
-    public <U> Try<U> map(Function<T, U> function) {
+    public <U> Try<U> map(CheckedFunction<T, U> function) {
         return Try.from(() -> function.apply(value));
     }
 
