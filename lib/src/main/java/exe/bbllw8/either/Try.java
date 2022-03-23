@@ -7,6 +7,7 @@ package exe.bbllw8.either;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * The {@link Try} type represents a computation that may either result in an exception, or return a
@@ -186,6 +187,13 @@ public abstract class Try<T> {
      * @since 3.0.0
      */
     public abstract Try<T> orElse(Try<T> fallback);
+
+    /**
+     * @return Returns a stream containing the result value if this is a {@link Success}, otherwise,
+     * {@link Stream#empty()}.
+     * @since 3.3.0
+     */
+    public abstract Stream<T> stream();
 
     /**
      * Transforms a nested {@link Try}, ie, a {@link Try} of type

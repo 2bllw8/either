@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * A successful result of a computation wrapped in a {@link Try} type.
@@ -112,6 +113,11 @@ public final class Success<T> extends Try<T> {
     @Override
     public Try<T> orElse(Try<T> fallback) {
         return this;
+    }
+
+    @Override
+    public Stream<T> stream() {
+        return Stream.of(value);
     }
 
     @Override

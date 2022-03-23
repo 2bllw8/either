@@ -134,6 +134,13 @@ public class SuccessTest {
                 Try.from(() -> 1).orElse(Try.from(() -> 2)));
     }
 
+    @Test
+    public void stream() {
+        Assert.assertEquals("Stream contains the right value",
+                new Success<>(8).stream().mapToInt(i -> i).sum(),
+                8);
+    }
+
     @SuppressWarnings("AssertBetweenInconvertibleTypes")
     @Test
     public void consistentEquality() {

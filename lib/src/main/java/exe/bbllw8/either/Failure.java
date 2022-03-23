@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * A failure that occurred during a computation wrapped in a {@link Try} type. Holds a {@link
@@ -109,6 +110,11 @@ public final class Failure<T> extends Try<T> {
     @Override
     public Try<T> orElse(Try<T> fallback) {
         return fallback;
+    }
+
+    @Override
+    public Stream<T> stream() {
+        return Stream.empty();
     }
 
     /**

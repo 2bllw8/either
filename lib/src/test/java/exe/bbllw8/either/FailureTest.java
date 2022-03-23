@@ -154,6 +154,13 @@ public class FailureTest {
                 }).orElse(Try.from(() -> "pancake")));
     }
 
+    @Test
+    public void stream() {
+        Assert.assertEquals("Stream is empty",
+                new Failure<>(new Throwable()).stream().count(),
+                0);
+    }
+
     @SuppressWarnings("AssertBetweenInconvertibleTypes")
     @Test
     public void consistentEquality() {
