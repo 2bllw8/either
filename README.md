@@ -25,10 +25,10 @@ Instances of `Try`, are either an instance of _either_ `Success` or `Failure`.
 ## Releases
 
 The latest release is available
-on [Maven Central](https://search.maven.org/artifact/io.github.2bllw8/either/3.2.0/jar).
+on [Maven Central](https://search.maven.org/artifact/io.github.2bllw8/either/3.3.0/jar).
 
 ```groovy
-implementation 'io.github.2bllw8:either:3.2.0'
+implementation 'io.github.2bllw8:either:3.3.0'
 ```
 
 ## Usage
