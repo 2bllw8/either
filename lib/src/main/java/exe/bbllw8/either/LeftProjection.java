@@ -60,8 +60,8 @@ public abstract class LeftProjection<A, B> {
     public abstract void forEach(Consumer<A> consumer);
 
     /**
-     * @return Returns the value from this {@link Left} or the given argument if this is a {@link
-     * Right}.
+     * @return Returns the value from this {@link Left} or the given argument if this is a
+     * {@link Right}.
      * @since 2.0.0
      */
     public abstract A getOrElse(A fallback);
@@ -74,15 +74,15 @@ public abstract class LeftProjection<A, B> {
     public abstract <A1> Either<A1, B> map(Function<A, A1> function);
 
     /**
-     * @return Returns a stream containing the {@link Left} value if it exists or {@link
-     * Stream#empty()} if this is a {@link Right}.
+     * @return Returns a stream containing the {@link Left} value if it exists or
+     * {@link Stream#empty()} if this is a {@link Right}.
      * @since 2.0.0
      */
     public abstract Stream<A> stream();
 
     /**
-     * @return Returns an {@link Optional} containing the {@link Left} value if it exists or {@link
-     * Optional#empty()} if this is a {@link Right}.
+     * @return Returns an {@link Optional} containing the {@link Left} value if it exists or
+     * {@link Optional#empty()} if this is a {@link Right}.
      * @since 2.0.0
      */
     public abstract Optional<A> toOptional();

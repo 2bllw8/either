@@ -51,8 +51,8 @@ public interface CheckedFunction<T, R> {
      *
      * @param <V>   the type of output of the {@code after} function, and of the composed function
      * @param after the function to apply after this function is applied
-     * @return a composed function that first applies this function and then applies the {@code
-     * after} function
+     * @return a composed function that first applies this function and then applies the
+     * {@code after} function
      * @throws NullPointerException if after is null
      * @see #compose(CheckedFunction)
      */
