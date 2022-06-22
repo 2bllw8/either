@@ -95,7 +95,7 @@ public final class Right<A, B> extends Either<A, B> {
 
     @Override
     public LeftProjection<A, B> left() {
-        return new RightToLeftProjection();
+        return new RightToLeftProjection<>(value);
     }
 
     @Override
@@ -156,7 +156,13 @@ public final class Right<A, B> extends Either<A, B> {
         return either.value;
     }
 
-    private final class RightToLeftProjection extends LeftProjection<A, B> {
+    private static final class RightToLeftProjection<A, B> extends LeftProjection<A, B> {
+
+        private transient final B value;
+
+        private RightToLeftProjection(B value) {
+            this.value = value;
+        }
 
         @Override
         public boolean exists(Function<A, Boolean> predicate) {
@@ -170,7 +176,7 @@ public final class Right<A, B> extends Either<A, B> {
 
         @Override
         public <A1> Either<A1, B> flatMap(Function<A, Either<A1, B>> function) {
-            return withLeft();
+            return new Right<>(value);
         }
 
         @Override
@@ -190,7 +196,7 @@ public final class Right<A, B> extends Either<A, B> {
 
         @Override
         public <A1> Either<A1, B> map(Function<A, A1> function) {
-            return withLeft();
+            return new Right<>(value);
         }
 
         @Override

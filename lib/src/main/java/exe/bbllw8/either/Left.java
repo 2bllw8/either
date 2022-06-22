@@ -93,7 +93,7 @@ public final class Left<A, B> extends Either<A, B> {
 
     @Override
     public LeftProjection<A, B> left() {
-        return new LeftToLeftProjection();
+        return new LeftToLeftProjection<>(value);
     }
 
     @Override
@@ -154,7 +154,13 @@ public final class Left<A, B> extends Either<A, B> {
         return either.withRight();
     }
 
-    private final class LeftToLeftProjection extends LeftProjection<A, B> {
+    private static final class LeftToLeftProjection<A, B> extends LeftProjection<A, B> {
+
+        private transient final A value;
+
+        private LeftToLeftProjection(A value) {
+            this.value = value;
+        }
 
         @Override
         public boolean exists(Function<A, Boolean> predicate) {
@@ -164,7 +170,7 @@ public final class Left<A, B> extends Either<A, B> {
         @Override
         public Optional<Either<A, B>> filterToOptional(Function<A, Boolean> predicate) {
             return predicate.apply(value)
-                    ? Optional.of(Left.this)
+                    ? Optional.of(new Left<>(value))
                     : Optional.empty();
         }
 
