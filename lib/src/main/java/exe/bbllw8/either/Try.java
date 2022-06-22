@@ -213,17 +213,10 @@ public abstract class Try<T> {
      *
      * @since 3.0.0
      */
-    @SuppressWarnings({
-            "deprecation",
-            "PMD.AvoidCatchingThrowable",
-    })
+    @SuppressWarnings({"PMD.AvoidCatchingThrowable"})
     public static <T> Try<T> from(CheckedSupplier<T> supplier) {
-        //noinspection deprecation
         try {
             return new Success<>(supplier.get());
-        } catch (CheckedException t) {
-            // TODO: remove this clause when CheckedException is removed
-            return new Failure<>(t.getCause());
         } catch (Throwable t) {
             return new Failure<>(t);
         }
