@@ -136,7 +136,7 @@ signing {
         required { true }
 
         def signingPassword = localProps.getProperty 'signing.password', ''
-        def signingKeyFile = file(rootProject.rootDir.absolutePath + '/' + signingKeyPath)
+        def signingKeyFile = file(rootProject.rootDir.absolutePath + File.separator + signingKeyPath)
 
         if (signingKeyFile.exists()) {
             useInMemoryPgpKeys signingKeyFile.text, signingPassword
