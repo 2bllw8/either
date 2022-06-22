@@ -28,6 +28,8 @@ import java.util.stream.Stream;
  * <p>
  * Combinators such as {@link Try#recover(Function)} and {@link Try#recoverWith(Function)} are
  * designed to provide some type of default behavior in the case of failure.
+ * <p>
+ * This class is not serializable.
  *
  * @author 2bllw8
  * @since 3.0.0
@@ -141,8 +143,8 @@ public abstract class Try<T> {
 
     /**
      * Inverts this {@link Try}. If this is a {@link Failure}, returns its exception wrapped in a
-     * {@link Success}. If this is a {@link Success}, returns a {@link Failure} containing an {@link
-     * UnsupportedOperationException}.
+     * {@link Success}. If this is a {@link Success}, returns a {@link Failure} containing an
+     * {@link UnsupportedOperationException}.
      *
      * @since 3.0.0
      */
@@ -150,8 +152,8 @@ public abstract class Try<T> {
 
     /**
      * Completes this {@link Try} by applying the function failureFunction to this if this is of
-     * type {@link Failure}, or conversely, by applying successFunction if this is a {@link
-     * Success}.
+     * type {@link Failure}, or conversely, by applying successFunction if this is a
+     * {@link Success}.
      *
      * @param successFunction the function to apply if this is a {@link Failure}
      * @param failureFunction the function to apply if this is a {@link Success}
@@ -161,8 +163,8 @@ public abstract class Try<T> {
             Function<Throwable, Try<U>> failureFunction);
 
     /**
-     * Applies successFunction if this is a {@link Failure} or failureFunction if this is a {@link
-     * Success}. If successFunction is initially applied and throws an exception, then
+     * Applies successFunction if this is a {@link Failure} or failureFunction if this is a
+     * {@link Success}. If successFunction is initially applied and throws an exception, then
      * failureFunction is applied with this exception.
      *
      * @param successFunction the function to apply if this is a {@link Failure}

@@ -20,6 +20,8 @@ import java.util.stream.Stream;
  *     <li>{@link Left}: instance with a left value</li>
  *     <li>{@link Right}: instance with a right value</li>
  * </ul>
+ * <p>
+ * This class is not serializable.
  *
  * @param <A> Type of the left value
  * @param <B> Type of the right value
@@ -75,11 +77,11 @@ public abstract class Either<A, B> {
     public abstract boolean exists(Function<B, Boolean> predicate);
 
     /**
-     * @return Returns {@link Right} with the existing value of {@link Right} if this is a {@link
-     * Right} and the given predicate p holds for the right value, or an instance of {@link Left}
-     * with fallback as argument if this is a {@link Right} and the given predicate does not hold
-     * for the right value, or an instance of {@link Left} with the existing value of {@link Left}
-     * if this is a {@link Left}.
+     * @return Returns {@link Right} with the existing value of {@link Right} if this is a
+     * {@link Right} and the given predicate p holds for the right value, or an instance of
+     * {@link Left} with fallback as argument if this is a {@link Right} and the given predicate
+     * does not hold for the right value, or an instance of {@link Left} with the existing value of
+     * {@link Left} if this is a {@link Left}.
      * @since 2.0.0
      */
     public abstract Either<A, B> filterOrElse(Function<B, Boolean> predicate, A fallback);
@@ -123,8 +125,8 @@ public abstract class Either<A, B> {
     public abstract void forEach(Consumer<A> consumerLeft, Consumer<B> consumerRight);
 
     /**
-     * @return Returns the value from this {@link Right} or the given fallback if this is a {@link
-     * Left}.
+     * @return Returns the value from this {@link Right} or the given fallback if this is a
+     * {@link Left}.
      * @since 2.0.0
      */
     public abstract B getOrElse(B fallback);
