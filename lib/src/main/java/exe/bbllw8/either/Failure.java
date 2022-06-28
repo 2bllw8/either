@@ -13,6 +13,13 @@ import java.util.stream.Stream;
 /**
  * A failure that occurred during a computation wrapped in a {@link Try} type. Holds a
  * {@link Throwable} object that represents the failure point.
+ * <p>
+ * Note: instances of the following classes are not handled:
+ * <ul>
+ *     <li>{@link LinkageError}</li>
+ *     <li>{@link ThreadDeath}</li>
+ *     <li>{@link VirtualMachineError}</li>
+ * </ul>
  *
  * @author 2bllw8
  * @since 3.0.0
