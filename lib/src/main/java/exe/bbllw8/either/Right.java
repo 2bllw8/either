@@ -165,6 +165,11 @@ public final class Right<A, B> extends Either<A, B> {
         }
 
         @Override
+        public boolean contains(B elem) {
+            return false;
+        }
+
+        @Override
         public boolean exists(Function<A, Boolean> predicate) {
             return false;
         }

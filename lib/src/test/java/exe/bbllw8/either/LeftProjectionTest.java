@@ -12,6 +12,16 @@ import org.junit.Test;
 public class LeftProjectionTest {
 
     @Test
+    public void contains() {
+        Assert.assertTrue("Contains should return true if the values are equal",
+                new Left<>(12).left().contains(12));
+        Assert.assertFalse("Contains should return false if the values are not equal",
+                new Left<>(7).left().contains(10));
+        Assert.assertFalse("Exists should return false if the projection is from a Right",
+                new Right<Integer, Integer>(12).left().contains(12));
+    }
+
+    @Test
     public void exists() {
         Assert.assertTrue("Exists should return true if the predicate is satisfied",
                 new Left<>(12).left().exists(x -> x > 10));

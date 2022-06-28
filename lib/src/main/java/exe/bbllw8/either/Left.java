@@ -163,6 +163,11 @@ public final class Left<A, B> extends Either<A, B> {
         }
 
         @Override
+        public boolean contains(B elem) {
+            return Objects.equals(value, elem);
+        }
+
+        @Override
         public boolean exists(Function<A, Boolean> predicate) {
             return predicate.apply(value);
         }

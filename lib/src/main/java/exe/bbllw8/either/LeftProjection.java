@@ -26,6 +26,17 @@ public abstract class LeftProjection<A, B> {
     }
 
     /**
+     * Returns true if this holds a {@link Left} value and its value is equal to elem (as determined
+     * by {@link Object#equals(Object)}), returns false otherwise.
+     *
+     * @param elem The element to test.
+     * @return <code>true</code> if this holds a {@link Left} value that is equal to
+     * <code>elem</code>
+     * @since 3.4.0
+     */
+    public abstract boolean contains(B elem);
+
+    /**
      * @return Returns false if {@link Right} or returns the result of the application of the given
      * function to the {@link Left} value.
      * @since 2.0.0
