@@ -7,6 +7,7 @@ package exe.bbllw8.either;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
@@ -19,6 +20,8 @@ import java.util.stream.Stream;
  * <ul>
  *     <li>{@link Left}: instance with a left value</li>
  *     <li>{@link Right}: instance with a right value</li>
+ *     <li>{@link Either#from(boolean, Supplier, Supplier)}: instance from the evaluation
+ *         of a supplied boolean value</li>
  * </ul>
  * <p>
  * This class is not serializable.
@@ -37,6 +40,7 @@ public abstract class Either<A, B> {
      * <ul>
      *     <li>{@link Left}</li>
      *     <li>{@link Right}</li>
+     *     <li>{@link Either#from(boolean, Supplier, Supplier)}</li>
      * </ul>
      *
      * @hidden
@@ -173,6 +177,19 @@ public abstract class Either<A, B> {
      * @since 2.0.0
      */
     public abstract Optional<B> toOptional();
+
+    /**
+     * @return If the <code>conditional</code> is <code>true</code> returns a {@link Right} holding
+     * the value supplied by <code>ifTrue</code>, otherwise a {@link Left} holding the value
+     * supplied by the <code>ifFalse</code>
+     * @since 3.4.0
+     */
+    public static <A, B> Either<A, B> from(boolean conditional, Supplier<B> ifTrue,
+            Supplier<A> ifFalse) {
+        return conditional
+                ? new Right<>(ifTrue.get())
+                : new Left<>(ifFalse.get());
+    }
 
     /**
      * @return Returns the right value if the given argument is {@link Right} or its value if it is
