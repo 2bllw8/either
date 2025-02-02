@@ -3,46 +3,53 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 plugins {
-    id 'java-library'
-    id 'maven-publish'
-    id 'pmd'
-    id 'signing'
+    id("java-library")
+    id("maven-publish")
+    id("pmd")
+    id("signing")
 }
+
+group = "exe.bbllw8"
+version = "3.4.0"
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testImplementation 'junit:junit:4.13.2'
+    testImplementation(libs.junit)
 }
-
-archivesBaseName = rootProject.name
-group = 'exe.bbllw8'
-version = '3.4.0'
 
 java {
     withJavadocJar()
     withSourcesJar()
 
-    sourceCompatibility = 8
-    targetCompatibility = 8
+    toolchain.languageVersion.set(JavaLanguageVersion.of(8))
 }
 
 javadoc {
     options.memberLevel = JavadocMemberLevel.PUBLIC
-    options.addStringOption 'Xdoclint:all,-missing', '-quiet'
+    options.addStringOption("Xdoclint:all,-missing", "-quiet")
+    options.addBooleanOption("html5", true)
+
+    configure(options) {
+        tags(
+                "apiNote:a:API Note:",
+                "implSpec:a:Implementation Requirements:",
+                "implNote:a:Implementation Note:",
+        )
+    }
 }
 
 compileJava {
-    options.compilerArgs << '-Xlint:unchecked'
+    options.compilerArgs << "-Xlint:all,-serial"
 }
 
-tasks.named('jar') {
+jar {
     manifest {
         attributes(
                 'Implementation-Title': rootProject.name,
-                'Implementation-Version': project.version
+                'Implementation-Version': project.version,
         )
     }
 }
@@ -53,7 +60,7 @@ tasks.withType(AbstractArchiveTask).configureEach {
 }
 
 def localProps = new Properties()
-def localPropsFile = project.rootProject.file('local.properties')
+def localPropsFile = project.rootProject.file("local.properties")
 if (localPropsFile.exists()) {
     localProps.load localPropsFile.newDataInputStream()
 }
@@ -63,27 +70,27 @@ pmd {
     toolVersion = "6.41.0"
     ruleSets = [
             "category/java/errorprone.xml",
-            "category/java/bestpractices.xml"
+            "category/java/bestpractices.xml",
     ]
 }
 
 publishing {
     repositories {
         maven {
-            name = 'GitHubPackages'
-            url = localProps.getProperty 'repo.github.url', ''
+            name = "GitHubPackages"
+            url = localProps.getProperty("repo.github.url", "")
             credentials {
-                username = localProps.getProperty 'repo.github.username', ''
-                password = localProps.getProperty 'repo.github.token', ''
+                username = localProps.getProperty("repo.github.username", "")
+                password = localProps.getProperty("repo.github.token", "")
             }
         }
 
         maven {
-            name = 'Central'
-            url = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
+            name = "Central"
+            url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
             credentials {
-                username = localProps.getProperty 'repo.central.username', ''
-                password = localProps.getProperty 'repo.central.password', ''
+                username = localProps.getProperty("repo.central.username", "")
+                password = localProps.getProperty("repo.central.password", "")
             }
         }
     }
@@ -91,37 +98,37 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             artifactId = rootProject.name
-            groupId = 'io.github.2bllw8'
-            setVersion project.version
+            groupId = "io.github.2bllw8"
+            setVersion(project.version)
 
-            from components.java
+            from(components.java)
             versionMapping {
-                usage('java-api') {
-                    fromResolutionOf 'runtimeClasspath'
+                usage("java-api") {
+                    fromResolutionOf("runtimeClasspath")
                 }
-                usage('java-runtime') {
-                    fromResolutionResult
+                usage("java-runtime") {
+                    fromResolutionResult()
                 }
             }
             pom {
-                name = 'Either'
-                description = 'Implementation of the Either and Try types for Java 8+'
-                url = 'https://github.com/2bllw8/either'
+                name = "Either"
+                description = "Implementation of the Either and Try types for Java 21+"
+                url = "https://github.com/2bllw8/either"
                 developers {
                     developer {
-                        name = '2bllw8'
+                        name = "2bllw8"
                     }
                 }
                 licenses {
                     license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                        name = "The Apache License, Version 2.0"
+                        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
                     }
                 }
                 scm {
-                    connection = 'scm:git:git://github.com/2bllw8/either.git'
-                    developerConnection = 'scm:git:git://github.com/2bllw8/either.git'
-                    url = 'https://github.com/2bllw8/either/tree/main'
+                    connection = "scm:git:git://github.com/2bllw8/either.git"
+                    developerConnection = "scm:git:git://github.com/2bllw8/either.git"
+                    url = "https://github.com/2bllw8/either/tree/main"
                 }
             }
         }
@@ -129,17 +136,17 @@ publishing {
 }
 
 signing {
-    def signingKeyPath = localProps.getProperty 'signing.secretKeyFile', ''
-    if (signingKeyPath == '') {
+    def signingKeyPath = localProps.getProperty("signing.secretKeyFile", "")
+    if (signingKeyPath == "") {
         required { false }
     } else {
         required { true }
 
-        def signingPassword = localProps.getProperty 'signing.password', ''
-        def signingKeyFile = file(rootProject.rootDir.absolutePath + File.separator + signingKeyPath)
+        def signingPassword = localProps.getProperty("signing.password", "")
+        def signingKeyFile = file("${rootProject.rootDir.absolutePath}${File.separator}${signingKeyPath}")
 
         if (signingKeyFile.exists()) {
-            useInMemoryPgpKeys signingKeyFile.text, signingPassword
+            useInMemoryPgpKeys(signingKeyFile.text, signingPassword)
         }
     }
     sign publishing.publications.mavenJava
