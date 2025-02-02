@@ -6,6 +6,7 @@ package exe.bbllw8.either;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -25,38 +26,54 @@ public class RightTest {
     }
 
     @Test
-    public void contains() {
+    public void containsValueEqual() {
         Assert.assertTrue("Should return true if the value is equal",
                 new Right<>("something").contains("something"));
+    }
+
+    @Test
+    public void containsValueNotEqual() {
         Assert.assertFalse("Should return false if the value is not equal",
                 new Right<>("something").contains("anything"));
     }
 
     @Test
-    public void exists() {
-        Assert.assertTrue("Should return true if the predicate holds",
+    public void existsPredicateSatisfied() {
+        Assert.assertTrue("Should return true if the predicate is satisfied",
                 new Right<>(12).exists(x -> x > 10));
-        Assert.assertFalse("Should return false if the predicate does not hold",
+    }
+
+    @Test
+    public void existsPredicateNotSatisfied() {
+        Assert.assertFalse("Should return false if the predicate is not satisfied",
                 new Right<>(7).exists(x -> x > 10));
     }
 
     @Test
-    public void filterOrElse() {
-        Assert.assertEquals("Should return itself if the predicate holds",
+    public void filterOrElsePredicateSatisfied() {
+        Assert.assertEquals("Should return itself if the predicate is satisfied",
                 new Right<>(12),
                 new Right<>(12).filterOrElse(x -> x > 10, -1));
+    }
+
+    @Test
+    public void filterOrElsePredicateNotSatisfied() {
         Assert.assertEquals(
-                "Should return a Left with the fallback value if the predicate does not hold",
+                "Should return a Left with the fallback value if the predicate is not satisfied",
                 new Left<>(-1),
                 new Right<>(7).filterOrElse(x -> x > 10, -1));
     }
 
     @Test
-    public void flatMap() {
-        Assert.assertEquals("Should apply the function",
+    public void flatMapAppliedRight() {
+        Assert.assertEquals("Should apply the function (right)",
                 new Right<>(12f),
                 new Right<Integer, Integer>(12).flatMap(x -> new Right<>((float) x)));
-        Assert.assertEquals("Should apply the function and mutate type",
+    }
+
+    @Test
+    public void flatMapAppliedLeft() {
+        Assert.assertEquals("Should apply the function (left)",
                 new Left<>(-1),
                 new Right<Integer, Integer>(12).flatMap(x -> new Left<>(-1)));
     }
@@ -69,10 +86,14 @@ public class RightTest {
     }
 
     @Test
-    public void forAll() {
-        Assert.assertTrue("Should return true if the predicate holds",
+    public void forAllPredicateSatisfied() {
+        Assert.assertTrue("Should return true if the predicate is satisfied",
                 new Right<>(12).forAll(x -> x > 10));
-        Assert.assertFalse("Should return false if the predicate does not hold",
+    }
+
+    @Test
+    public void forAllPredicateNotSatisfied() {
+        Assert.assertFalse("Should return false if the predicate is not satisfied",
                 new Right<>(7).forAll(x -> x > 10));
     }
 
@@ -86,8 +107,9 @@ public class RightTest {
                 sb.toString());
     }
 
+    @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
     @Test
-    public void forEachBi() {
+    public void forEachBiRight() {
         final StringBuilder sbLeft = new StringBuilder();
         final StringBuilder sbRight = new StringBuilder();
 
@@ -95,6 +117,16 @@ public class RightTest {
         Assert.assertEquals("The Right function should have been applied",
                 "cookie",
                 sbRight.toString());
+
+    }
+
+    @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
+    @Test
+    public void forEachBiLeft() {
+        final StringBuilder sbLeft = new StringBuilder();
+        final StringBuilder sbRight = new StringBuilder();
+
+        new Right<>("cookie").forEach(sbLeft::append, sbRight::append);
         Assert.assertEquals("The Left function should not have been applied",
                 "",
                 sbLeft.toString());
@@ -108,11 +140,15 @@ public class RightTest {
     }
 
     @Test
-    public void flatten() {
-        Assert.assertEquals("The inner value should be returned",
+    public void flattenInnerLeft() {
+        Assert.assertEquals("The inner Left value should be returned",
                 new Left<>("cookie"),
                 Either.flatten(new Right<>(new Left<>("cookie"))));
-        Assert.assertEquals("The inner value should be returned",
+    }
+
+    @Test
+    public void flattenInnerRight() {
+        Assert.assertEquals("The inner Right value should be returned",
                 new Right<>(7),
                 Either.flatten(new Right<>(new Right<>(7))));
     }
@@ -166,7 +202,10 @@ public class RightTest {
                 Either.joinRight(new Right<>(new Right<>(12))));
     }
 
-    @SuppressWarnings("AssertBetweenInconvertibleTypes")
+    @SuppressWarnings({
+            "AssertBetweenInconvertibleTypes",
+            "PMD.UnitTestContainsTooManyAsserts",
+    })
     @Test
     public void consistentEquality() {
         Assert.assertEquals("Equal values and types should be equal",

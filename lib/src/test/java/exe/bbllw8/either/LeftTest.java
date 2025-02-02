@@ -5,10 +5,10 @@
 package exe.bbllw8.either;
 
 import java.util.Optional;
+
 import org.junit.Assert;
 import org.junit.Test;
 
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class LeftTest {
 
     @Test
@@ -24,18 +24,26 @@ public class LeftTest {
     }
 
     @Test
-    public void contains() {
-        Assert.assertFalse("Should always return false",
+    public void containsValueEqual() {
+        Assert.assertFalse("Should return false even if the value is equal",
                 new Left<>("something").contains("something"));
-        Assert.assertFalse("Should always return false",
+    }
+
+    @Test
+    public void containsValueNotEqual() {
+        Assert.assertFalse("Should return false if the value is not equal",
                 new Left<>("something").contains("anything"));
     }
 
     @Test
-    public void exists() {
-        Assert.assertFalse("Should always return false",
+    public void existsPredicateSatisfied() {
+        Assert.assertFalse("Should return false even if the predicate is satisfied",
                 new Left<Integer, Integer>(12).exists(x -> x > 10));
-        Assert.assertFalse("Should always return false",
+    }
+
+    @Test
+    public void existsPredicateNotSatisfied() {
+        Assert.assertFalse("Should return false if the predicate is not satisfied",
                 new Left<Integer, Integer>(7).exists(x -> x > 10));
     }
 
@@ -60,10 +68,14 @@ public class LeftTest {
     }
 
     @Test
-    public void forAll() {
-        Assert.assertTrue("Should always return true",
+    public void forAllPredicateSatisfied() {
+        Assert.assertTrue("Should return true if the predicate is satisfied",
                 new Left<Integer, Integer>(11).forAll(x -> x > 10));
-        Assert.assertTrue("Should always return true",
+    }
+
+    @Test
+    public void forAllPredicateNotSatisfied() {
+        Assert.assertTrue("Should return true even if the predicate is not satisfied",
                 new Left<Integer, Integer>(7).forAll(x -> x > 10));
     }
 
@@ -77,25 +89,35 @@ public class LeftTest {
                 sb.toString());
     }
 
+    @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
     @Test
-    public void forEachBi() {
+    public void forEachBiRightFunction() {
         final StringBuilder sbLeft = new StringBuilder();
         final StringBuilder sbRight = new StringBuilder();
 
-        new Left<>("cookie").forEach(sbLeft::append, sbRight::append);
+        new Left<>("moon").forEach(sbLeft::append, sbRight::append);
         Assert.assertEquals("The Right function should not be invoked",
                 "",
                 sbRight.toString());
+    }
+
+    @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
+    @Test
+    public void forEachBiLeftFunction() {
+        final StringBuilder sbLeft = new StringBuilder();
+        final StringBuilder sbRight = new StringBuilder();
+
+        new Left<>("bird").forEach(sbLeft::append, sbRight::append);
         Assert.assertEquals("The Left function should be invoked",
-                "cookie",
+                "bird",
                 sbLeft.toString());
     }
 
     @Test
     public void getOrElse() {
         Assert.assertEquals("The fallback value should be returned",
-                "cookie",
-                new Left<String, String>("pancake").getOrElse("cookie"));
+                "cake",
+                new Left<String, String>("pancake").getOrElse("cake"));
     }
 
     @Test
@@ -109,7 +131,7 @@ public class LeftTest {
     public void map() {
         Assert.assertEquals("The function should not be applied",
                 new Left<>(12),
-                new Left<>(12).map(x -> "flower"));
+                new Left<>(12).map(x -> "rock"));
     }
 
     @Test
@@ -129,8 +151,8 @@ public class LeftTest {
     @Test
     public void swap() {
         Assert.assertEquals("A Right with the same value should be returned",
-                new Left<>("flower"),
-                new Right<>("flower").swap());
+                new Left<>("star"),
+                new Right<>("star").swap());
     }
 
     @Test
@@ -149,15 +171,22 @@ public class LeftTest {
 
     @Test
     public void joinRight() {
-        Assert.assertEquals("The inner value should be returned",
-                new Left<>("daisy"),
-                Either.joinRight(new Right<>(new Left<>("daisy"))));
         Assert.assertEquals("The type and value should be retained",
                 new Left<>("flower"),
                 Either.joinRight(new Left<>("flower")));
     }
 
-    @SuppressWarnings("AssertBetweenInconvertibleTypes")
+    @Test
+    public void joinRightInnerValue() {
+        Assert.assertEquals("The inner value should be returned",
+                new Left<>("daisy"),
+                Either.joinRight(new Right<>(new Left<>("daisy"))));
+    }
+
+    @SuppressWarnings({
+            "AssertBetweenInconvertibleTypes",
+            "PMD.UnitTestContainsTooManyAsserts",
+    })
     @Test
     public void consistentEquality() {
         Assert.assertEquals("Equal values and types should be equal",

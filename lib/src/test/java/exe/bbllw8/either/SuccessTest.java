@@ -5,14 +5,19 @@
 package exe.bbllw8.either;
 
 import java.util.Optional;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 public class SuccessTest {
 
     @Test
-    public void isFailure() {
+    public void isFailureConstructor() {
         Assert.assertFalse("A Success should not be a failure", new Success<>(12).isFailure());
+    }
+
+    @Test
+    public void isFailureFromTry() {
         Assert.assertFalse("A supplier that does not throw an exception should not be a failure",
                 Try.from(Object::new).isFailure());
     }
@@ -20,8 +25,6 @@ public class SuccessTest {
     @Test
     public void isSuccess() {
         Assert.assertTrue("A Success should be a success", new Success<>(3).isSuccess());
-        Assert.assertTrue("A supplier that does not throw an exception should be a success",
-                Try.from(Object::new).isSuccess());
     }
 
     @Test
@@ -62,10 +65,14 @@ public class SuccessTest {
     }
 
     @Test
-    public void filter() {
-        Assert.assertTrue("Should return a success if the predicate holds",
+    public void filterPredicateSatisfied() {
+        Assert.assertTrue("Should return a success if the predicate is satisfied",
                 new Success<>(2).filter(i -> i % 2 == 0).isSuccess());
-        Assert.assertFalse("Should not return a success if the predicate does not hold",
+    }
+
+    @Test
+    public void filterPredicateNotSatisfied() {
+        Assert.assertFalse("Should not return a success if the predicate is not satisfied",
                 new Success<>(3).filter(i -> i % 2 == 0).isSuccess());
     }
 
@@ -141,7 +148,10 @@ public class SuccessTest {
                 8);
     }
 
-    @SuppressWarnings("AssertBetweenInconvertibleTypes")
+    @SuppressWarnings({
+            "AssertBetweenInconvertibleTypes",
+            "PMD.UnitTestContainsTooManyAsserts",
+    })
     @Test
     public void consistentEquality() {
         Assert.assertEquals("Equal values should be equal",

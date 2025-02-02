@@ -12,9 +12,13 @@ import org.junit.Test;
 public class FailureTest {
 
     @Test
-    public void isFailure() {
+    public void isFailureFromConstructor() {
         Assert.assertTrue("Should be a failure",
                 new Failure<>(new Throwable("pancake")).isFailure());
+    }
+
+    @Test
+    public void isFailureFromThrownException() {
         Assert.assertTrue("A supplier that throws an exception should be a failure",
                 Try.from(() -> {
                     throw new IllegalStateException();
@@ -22,9 +26,13 @@ public class FailureTest {
     }
 
     @Test
-    public void isSuccess() {
+    public void isNotSuccessFromConstructor() {
         Assert.assertFalse("Should not be a success",
                 new Failure<>(new Throwable("cookie")).isSuccess());
+    }
+
+    @Test
+    public void isNotSuccessFromThrownException() {
         Assert.assertFalse("A supplier that throws an exception should not be a success",
                 Try.from(() -> {
                     throw new IllegalStateException();
@@ -162,7 +170,10 @@ public class FailureTest {
                 0);
     }
 
-    @SuppressWarnings("AssertBetweenInconvertibleTypes")
+    @SuppressWarnings({
+            "AssertBetweenInconvertibleTypes",
+            "PMD.UnitTestContainsTooManyAsserts",
+    })
     @Test
     public void consistentEquality() {
         final NumberFormatException nfe = new NumberFormatException();
@@ -197,11 +208,15 @@ public class FailureTest {
     }
 
     @Test
-    public void multipleThrow() {
+    public void multipleThrow1() {
         Assert.assertTrue("Multiple thrown classes are handled (throwable #1)",
                 Try.from(() -> new IntToBoolean().convert(2))
                         .recover(t -> t instanceof IllegalAccessException)
                         .get());
+    }
+
+    @Test
+    public void multipleThrow2() {
         Assert.assertTrue("Multiple thrown classes are handled (throwable #2)",
                 Try.from(() -> new IntToBoolean().convert(3))
                         .recover(t -> t instanceof IllegalArgumentException)
