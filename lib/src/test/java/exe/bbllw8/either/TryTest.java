@@ -30,6 +30,7 @@ public class TryTest {
                 Try.from(() -> {
                     throw new Throwable();
                 }).isFailure());
+        //noinspection DataFlowIssue
         Assert.assertTrue("A supplier throwing an exception should return a failure",
                 Try.from(() -> Integer.parseInt("-")).isFailure());
         Assert.assertTrue("A supplier that does not throw an exception should return a success",

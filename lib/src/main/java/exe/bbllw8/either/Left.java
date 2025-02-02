@@ -122,14 +122,9 @@ public final class Left<A, B> extends Either<A, B> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Left)) {
-            return false;
-        }
-        final Left<?, ?> that = (Left<?, ?>) o;
-        return Objects.equals(value, that.value);
+        return this == o
+                || (o instanceof Left<?, ?> that
+                && Objects.equals(value, that.value));
     }
 
     @Override
@@ -139,18 +134,18 @@ public final class Left<A, B> extends Either<A, B> {
 
     @Override
     public String toString() {
-        return "Left(" + value + ")";
+        return "Left[" + value + "]";
     }
 
-    public static <A, B> Either<A, B> flatten(Left<A, Either<A, B>> either) {
+    static <A, B> Either<A, B> flatten(Left<A, Either<A, B>> either) {
         return either.withRight();
     }
 
-    public static <B, C> Either<C, B> joinLeft(Left<Either<C, B>, B> either) {
+    static <B, C> Either<C, B> joinLeft(Left<Either<C, B>, B> either) {
         return either.value;
     }
 
-    public static <A, C> Either<A, C> joinRight(Left<A, Either<A, C>> either) {
+    static <A, C> Either<A, C> joinRight(Left<A, Either<A, C>> either) {
         return either.withRight();
     }
 

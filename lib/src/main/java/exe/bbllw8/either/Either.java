@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 /**
  * Represents a value of 1 of 2 possible types (disjoint union).
  *
- * <code>null</code> values are not accepted and will throw exceptions
+ * <p><code>null</code> values are not accepted and will throw exceptions
  * if used in an Either instance.
  * <p>
  * Construct an instance using one of:
@@ -31,7 +31,7 @@ import java.util.stream.Stream;
  * @author 2bllw8
  * @since 1.0.0
  */
-public abstract class Either<A, B> {
+public sealed abstract class Either<A, B> permits Left, Right {
 
     /**
      * Default package-private constructor.
@@ -185,7 +185,7 @@ public abstract class Either<A, B> {
      * @since 3.4.0
      */
     public static <A, B> Either<A, B> from(boolean conditional, Supplier<B> ifTrue,
-            Supplier<A> ifFalse) {
+                                           Supplier<A> ifFalse) {
         return conditional
                 ? new Right<>(ifTrue.get())
                 : new Left<>(ifFalse.get());
@@ -197,14 +197,10 @@ public abstract class Either<A, B> {
      * @since 2.0.0
      */
     public static <A, B> Either<A, B> flatten(Either<A, Either<A, B>> either) {
-        if (either instanceof Left<?, ?>) {
-            return Left.flatten((Left<A, Either<A, B>>) either);
-        } else if (either instanceof Right<?, ?>) {
-            return Right.flatten((Right<A, Either<A, B>>) either);
-        } else {
-            // Should never happen
-            throw new IllegalStateException();
-        }
+        return switch (either) {
+            case Left<A, Either<A, B>> l -> Left.flatten(l);
+            case Right<A, Either<A, B>> r -> Right.flatten(r);
+        };
     }
 
     /**
@@ -220,14 +216,10 @@ public abstract class Either<A, B> {
      * @since 2.0.0
      */
     public static <B, C> Either<C, B> joinLeft(Either<Either<C, B>, B> either) {
-        if (either instanceof Left<?, ?>) {
-            return Left.joinLeft((Left<Either<C, B>, B>) either);
-        } else if (either instanceof Right<?, ?>) {
-            return Right.joinLeft((Right<Either<C, B>, B>) either);
-        } else {
-            // Should never happen
-            throw new IllegalStateException();
-        }
+        return switch (either) {
+            case Left<Either<C, B>, B> l -> Left.joinLeft(l);
+            case Right<Either<C, B>, B> r -> Right.joinLeft(r);
+        };
     }
 
     /**
@@ -243,13 +235,9 @@ public abstract class Either<A, B> {
      * @since 2.0.0
      */
     public static <A, C> Either<A, C> joinRight(Either<A, Either<A, C>> either) {
-        if (either instanceof Left<?, ?>) {
-            return Left.joinRight((Left<A, Either<A, C>>) either);
-        } else if (either instanceof Right<?, ?>) {
-            return Right.joinRight((Right<A, Either<A, C>>) either);
-        } else {
-            // Should never happen
-            throw new IllegalStateException();
-        }
+        return switch (either) {
+            case Left<A, Either<A, C>> l -> Left.joinRight(l);
+            case Right<A, Either<A, C>> r -> Right.joinRight(r);
+        };
     }
 }

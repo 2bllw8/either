@@ -24,7 +24,7 @@ java {
     withJavadocJar()
     withSourcesJar()
 
-    toolchain.languageVersion.set(JavaLanguageVersion.of(8))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 }
 
 javadoc {
@@ -138,9 +138,9 @@ publishing {
 signing {
     def signingKeyPath = localProps.getProperty("signing.secretKeyFile", "")
     if (signingKeyPath == "") {
-        required { false }
+        required = false
     } else {
-        required { true }
+        required = true
 
         def signingPassword = localProps.getProperty("signing.password", "")
         def signingKeyFile = file("${rootProject.rootDir.absolutePath}${File.separator}${signingKeyPath}")

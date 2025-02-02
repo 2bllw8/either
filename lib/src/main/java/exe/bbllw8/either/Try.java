@@ -34,7 +34,7 @@ import java.util.stream.Stream;
  * @author 2bllw8
  * @since 3.0.0
  */
-public abstract class Try<T> {
+public sealed abstract class Try<T> permits Success, Failure {
 
     /**
      * Default package-private constructor.

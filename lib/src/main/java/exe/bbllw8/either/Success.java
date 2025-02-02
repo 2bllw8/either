@@ -66,7 +66,7 @@ public final class Success<T> extends Try<T> {
         return predicate.apply(value)
                 ? this
                 : new Failure<>(new NoSuchElementException(
-                        "Predicate does not hold for " + value));
+                "Predicate does not hold for " + value));
     }
 
     @Override
@@ -96,7 +96,7 @@ public final class Success<T> extends Try<T> {
 
     @Override
     public <U> Try<U> transform(Function<T, Try<U>> successFunction,
-            Function<Throwable, Try<U>> failureFunction) {
+                                Function<Throwable, Try<U>> failureFunction) {
         return successFunction.apply(value);
     }
 
@@ -122,14 +122,9 @@ public final class Success<T> extends Try<T> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Success)) {
-            return false;
-        }
-        final Success<?> that = (Success<?>) o;
-        return Objects.equals(value, that.value);
+        return this == o
+                || (o instanceof Success<?> that
+                && Objects.equals(value, that.value));
     }
 
     @Override
@@ -139,6 +134,6 @@ public final class Success<T> extends Try<T> {
 
     @Override
     public String toString() {
-        return "Success(" + value + ')';
+        return "Success[" + value + ']';
     }
 }

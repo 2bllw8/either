@@ -124,14 +124,9 @@ public final class Right<A, B> extends Either<A, B> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Right)) {
-            return false;
-        }
-        final Right<?, ?> that = (Right<?, ?>) o;
-        return Objects.equals(value, that.value);
+        return this == o
+                || (o instanceof Right<?, ?> other
+                && Objects.equals(value, other.value));
     }
 
     @Override
@@ -141,7 +136,7 @@ public final class Right<A, B> extends Either<A, B> {
 
     @Override
     public String toString() {
-        return "Right(" + value + ")";
+        return "Right[" + value + "]";
     }
 
     public static <A, B> Either<A, B> flatten(Right<A, Either<A, B>> either) {

@@ -182,7 +182,7 @@ public class LeftTest {
     @Test
     public void stringRepresentation() {
         Assert.assertEquals("The string representation should match the documentation",
-                "Left(12)",
+                "Left[12]",
                 new Left<>(12).toString());
     }
 }

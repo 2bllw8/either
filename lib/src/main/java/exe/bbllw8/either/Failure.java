@@ -17,7 +17,6 @@ import java.util.stream.Stream;
  * Note: instances of the following classes are not handled:
  * <ul>
  *     <li>{@link LinkageError}</li>
- *     <li>{@link ThreadDeath}</li>
  *     <li>{@link VirtualMachineError}</li>
  * </ul>
  *
@@ -100,7 +99,7 @@ public final class Failure<T> extends Try<T> {
 
     @Override
     public <U> Try<U> transform(Function<T, Try<U>> successFunction,
-            Function<Throwable, Try<U>> failureFunction) {
+                                Function<Throwable, Try<U>> failureFunction) {
         return failureFunction.apply(throwable);
     }
 
@@ -135,14 +134,9 @@ public final class Failure<T> extends Try<T> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Failure)) {
-            return false;
-        }
-        final Failure<?> that = (Failure<?>) o;
-        return Objects.equals(throwable, that.throwable);
+        return this == o
+                || (o instanceof Failure<?> that
+                && Objects.equals(throwable, that.throwable));
     }
 
     @Override
@@ -152,19 +146,17 @@ public final class Failure<T> extends Try<T> {
 
     @Override
     public String toString() {
-        return "Failure(" + throwable + ')';
+        return "Failure[" + throwable + ']';
     }
 
     /**
      * Assert that the given throwable is not fatal.
      */
     private static void assertNotFatal(Throwable t) {
-        if (t instanceof VirtualMachineError) {
-            throw (VirtualMachineError) t;
-        } else if (t instanceof ThreadDeath) {
-            throw (ThreadDeath) t;
-        } else if (t instanceof LinkageError) {
-            throw (LinkageError) t;
+        switch (t) {
+            case VirtualMachineError vme -> throw vme;
+            case LinkageError le -> throw le;
+            default -> { /* Do nothing */ }
         }
     }
 }
