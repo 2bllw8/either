@@ -79,6 +79,10 @@ public final class Success<T> implements Try<T> {
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     * @implNote If {@link #value} is null, the returned optional is {@link Optional#empty()}.
+     */
     @Override
     public Optional<T> tOptional() {
         return Optional.ofNullable(value);
