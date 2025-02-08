@@ -23,7 +23,7 @@ import java.util.stream.Stream;
  * @author 2bllw8
  * @since 3.0.0
  */
-public final class Failure<T> extends Try<T> {
+public final class Failure<T> implements Try<T> {
 
     private transient final Throwable throwable;
 

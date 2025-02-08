@@ -18,7 +18,7 @@ import java.util.stream.Stream;
  * @see Right
  * @since 2.0.0
  */
-public final class Left<A, B> extends Either<A, B> {
+public final class Left<A, B> implements Either<A, B> {
 
     private transient final A value;
 
