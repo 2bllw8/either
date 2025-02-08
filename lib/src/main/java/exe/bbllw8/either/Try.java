@@ -91,7 +91,7 @@ public sealed abstract class Try<T> permits Success, Failure {
 
     /**
      * @return Returns the given function applied to the value from this {@link Success} or returns
-     * this if this is a {@link} Failure.
+     * this if this is a {@link Failure}.
      * @since 3.0.0
      */
     public abstract <U> Try<U> flatMap(Function<T, Try<U>> function);
