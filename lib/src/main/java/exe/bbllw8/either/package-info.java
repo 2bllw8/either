@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2022 2bllw8
- * SPDX-License-Identifier: Apache-2.0
+ * Copyright (c) 2022-2025 2bllw8
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 /**

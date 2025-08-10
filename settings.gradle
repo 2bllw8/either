@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2021 2bllw8
- * SPDX-License-Identifier: Apache-2.0
+ * Copyright (c) 2021-2025 2bllw8
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 rootProject.name = "either"

@@ -1,11 +1,8 @@
 #!/usr/bin/env sh
 #
-# Copyright (c) 2022 2bllw8
-# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022-2025 2bllw8
+# SPDX-License-Identifier: BSD-3-Clause
 #
-# Update version script
-# Usage:
-#   ./version.sh "old.version" "new.version"
 
 function usage {
   echo "Usage: ${0} \$OLD_VERSION \$NEW_VERSION"
