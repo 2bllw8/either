@@ -34,33 +34,51 @@ import java.util.stream.Stream;
  * @author 2bllw8
  * @since 3.0.0
  */
-public sealed interface Try<T> permits Success, Failure {
+public abstract class Try<T> {
+
+    /**
+     * Default package-private constructor.
+     *
+     * <p>To instantiate this class use one of:
+     * <ul>
+     *     <li>{@link Success}</li>
+     *     <li>{@link Failure}</li>
+     *     <li>{@link Try#from(CheckedSupplier)}</li>
+     * </ul>
+     *
+     * @hidden
+     * @see Success
+     * @see Failure
+     * @since 3.0.0
+     */
+    /* package */ Try() {
+    }
 
     /**
      * @return Returns true if the {@link Try} is a {@link Failure}, false otherwise.
      * @since 3.0.0
      */
-    boolean isFailure();
+    public abstract boolean isFailure();
 
     /**
      * @return Returns true if the {@link Try} is a {@link Success}, false otherwise.
      * @since 3.0.0
      */
-    boolean isSuccess();
+    public abstract boolean isSuccess();
 
     /**
      * @return Returns the value from this {@link Success} or throws the exception if this is a
      * {@link Failure}.
      * @since 3.0.0
      */
-    T get();
+    public abstract T get();
 
     /**
      * Applies the given function iff this is a {@link Success}.
      *
      * @since 3.0.0
      */
-    void forEach(Consumer<T> consumer);
+    public abstract void forEach(Consumer<T> consumer);
 
     /**
      * Applies a given side-effecting function depending on whether this is a {@link Success} or a
@@ -68,14 +86,15 @@ public sealed interface Try<T> permits Success, Failure {
      *
      * @since 3.1.0
      */
-    void forEach(Consumer<T> successConsumer, Consumer<Throwable> failureConsumer);
+    public abstract void forEach(Consumer<T> successConsumer,
+            Consumer<Throwable> failureConsumer);
 
     /**
      * @return Returns the given function applied to the value from this {@link Success} or returns
      * this if this is a {@link Failure}.
      * @since 3.0.0
      */
-    <U> Try<U> flatMap(Function<T, Try<U>> function);
+    public abstract <U> Try<U> flatMap(Function<T, Try<U>> function);
 
     /**
      * Maps the given function to the value from this {@link Success} or returns this if this is a
@@ -83,14 +102,14 @@ public sealed interface Try<T> permits Success, Failure {
      *
      * @since 3.0.0
      */
-    <U> Try<U> map(CheckedFunction<T, U> function);
+    public abstract <U> Try<U> map(CheckedFunction<T, U> function);
 
     /**
      * Converts this to a {@link Failure} if the predicate is not satisfied.
      *
      * @since 3.0.0
      */
-    Try<T> filter(Function<T, Boolean> predicate);
+    public abstract Try<T> filter(Function<T, Boolean> predicate);
 
     /**
      * Applies the given function if this is a {@link Failure}, otherwise returns this if this is a
@@ -98,7 +117,7 @@ public sealed interface Try<T> permits Success, Failure {
      *
      * @since 3.0.0
      */
-    Try<T> recoverWith(Function<Throwable, Try<T>> function);
+    public abstract Try<T> recoverWith(Function<Throwable, Try<T>> function);
 
     /**
      * Applies the given function if this is a {@link Failure}, otherwise returns this if this is a
@@ -106,21 +125,21 @@ public sealed interface Try<T> permits Success, Failure {
      *
      * @since 3.0.0
      */
-    Try<T> recover(Function<Throwable, T> function);
+    public abstract Try<T> recover(Function<Throwable, T> function);
 
     /**
      * @return Returns {@link Optional#empty()} if this is a {@link Failure} or returns an optional
      * containing the value if this is a {@link Success}.
      * @since 3.0.0
      */
-    Optional<T> tOptional();
+    public abstract Optional<T> tOptional();
 
     /**
      * @return Returns {@link Left} with {@link Throwable} if this is a {@link Failure}, otherwise
      * returns {@link Right} with {@link Success} value.
      * @since 3.0.0
      */
-    Either<Throwable, T> toEither();
+    public abstract Either<Throwable, T> toEither();
 
     /**
      * Inverts this {@link Try}. If this is a {@link Failure}, returns its exception wrapped in a
@@ -129,7 +148,7 @@ public sealed interface Try<T> permits Success, Failure {
      *
      * @since 3.0.0
      */
-    Try<Throwable> failed();
+    public abstract Try<Throwable> failed();
 
     /**
      * Completes this {@link Try} by applying the function failureFunction to this if this is of
@@ -140,8 +159,8 @@ public sealed interface Try<T> permits Success, Failure {
      * @param failureFunction the function to apply if this is a {@link Success}
      * @since 3.0.0
      */
-    <U> Try<U> transform(Function<T, Try<U>> successFunction,
-                         Function<Throwable, Try<U>> failureFunction);
+    public abstract <U> Try<U> transform(Function<T, Try<U>> successFunction,
+            Function<Throwable, Try<U>> failureFunction);
 
     /**
      * Applies successFunction if this is a {@link Failure} or failureFunction if this is a
@@ -153,8 +172,8 @@ public sealed interface Try<T> permits Success, Failure {
      * @return Returns the results of applying the function
      * @since 3.0.0
      */
-    <U> U fold(Function<Throwable, U> failureFunction,
-               Function<T, U> successFunction);
+    public abstract <U> U fold(Function<Throwable, U> failureFunction,
+            Function<T, U> successFunction);
 
     /**
      * Applies the given function to the value from this {@link Success} or returns this if this is
@@ -162,21 +181,21 @@ public sealed interface Try<T> permits Success, Failure {
      *
      * @since 3.0.0
      */
-    T getOrElse(T fallback);
+    public abstract T getOrElse(T fallback);
 
     /**
      * @return Returns this {@link Try} if it's a `Success` or the given `default` argument if this
      * is a `Failure`.
      * @since 3.0.0
      */
-    Try<T> orElse(Try<T> fallback);
+    public abstract Try<T> orElse(Try<T> fallback);
 
     /**
      * @return Returns a stream containing the result value if this is a {@link Success}, otherwise,
      * {@link Stream#empty()}.
      * @since 3.3.0
      */
-    Stream<T> stream();
+    public abstract Stream<T> stream();
 
     /**
      * Transforms a nested {@link Try}, ie, a {@link Try} of type
@@ -186,7 +205,7 @@ public sealed interface Try<T> permits Success, Failure {
      *
      * @since 3.0.0
      */
-    static <T> Try<T> flatten(Try<Try<T>> tryTry) {
+    public static <T> Try<T> flatten(Try<Try<T>> tryTry) {
         return tryTry.isSuccess() ? tryTry.get() : ((Failure<?>) tryTry).withType();
     }
 
@@ -197,7 +216,7 @@ public sealed interface Try<T> permits Success, Failure {
      * @since 3.0.0
      */
     @SuppressWarnings({"PMD.AvoidCatchingThrowable"})
-    static <T> Try<T> from(CheckedSupplier<T> supplier) {
+    public static <T> Try<T> from(CheckedSupplier<T> supplier) {
         try {
             return new Success<>(supplier.get());
         } catch (Throwable t) {

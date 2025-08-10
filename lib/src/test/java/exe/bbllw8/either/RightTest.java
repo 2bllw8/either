@@ -230,7 +230,7 @@ public class RightTest {
     @Test
     public void stringRepresentation() {
         Assert.assertEquals("The string representation should match the documentation",
-                "Right[12]",
+                "Right(12)",
                 new Right<>(12).toString());
     }
 }

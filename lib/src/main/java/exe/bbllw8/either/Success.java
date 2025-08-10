@@ -18,7 +18,7 @@ import java.util.stream.Stream;
  * @author 2bllw8
  * @since 3.0.0
  */
-public final class Success<T> implements Try<T> {
+public final class Success<T> extends Try<T> {
 
     private transient final T value;
 
@@ -65,8 +65,7 @@ public final class Success<T> implements Try<T> {
     public Try<T> filter(Function<T, Boolean> predicate) {
         return predicate.apply(value)
                 ? this
-                : new Failure<>(new NoSuchElementException(
-                "Predicate does not hold for " + value));
+                : new Failure<>(new NoSuchElementException("Predicate does not hold for " + value));
     }
 
     @Override
@@ -81,6 +80,7 @@ public final class Success<T> implements Try<T> {
 
     /**
      * {@inheritDoc}
+     *
      * @implNote If {@link #value} is null, the returned optional is {@link Optional#empty()}.
      */
     @Override
@@ -126,9 +126,14 @@ public final class Success<T> implements Try<T> {
 
     @Override
     public boolean equals(Object o) {
-        return this == o
-                || (o instanceof Success<?> that
-                && Objects.equals(value, that.value));
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Success)) {
+            return false;
+        }
+        final Success<?> that = (Success<?>) o;
+        return Objects.equals(value, that.value);
     }
 
     @Override
@@ -138,6 +143,6 @@ public final class Success<T> implements Try<T> {
 
     @Override
     public String toString() {
-        return "Success[" + value + ']';
+        return "Success(" + value + ')';
     }
 }

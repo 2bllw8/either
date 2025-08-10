@@ -18,7 +18,7 @@ import java.util.stream.Stream;
  * @see Right
  * @since 2.0.0
  */
-public final class Left<A, B> implements Either<A, B> {
+public final class Left<A, B> extends Either<A, B> {
 
     private transient final A value;
 
@@ -122,9 +122,14 @@ public final class Left<A, B> implements Either<A, B> {
 
     @Override
     public boolean equals(Object o) {
-        return this == o
-                || (o instanceof Left<?, ?> that
-                && Objects.equals(value, that.value));
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Left)) {
+            return false;
+        }
+        final Left<?, ?> that = (Left<?, ?>) o;
+        return Objects.equals(value, that.value);
     }
 
     @Override
@@ -134,18 +139,18 @@ public final class Left<A, B> implements Either<A, B> {
 
     @Override
     public String toString() {
-        return "Left[" + value + "]";
+        return "Left(" + value + ")";
     }
 
-    static <A, B> Either<A, B> flatten(Left<A, Either<A, B>> either) {
+    public static <A, B> Either<A, B> flatten(Left<A, Either<A, B>> either) {
         return either.withRight();
     }
 
-    static <B, C> Either<C, B> joinLeft(Left<Either<C, B>, B> either) {
+    public static <B, C> Either<C, B> joinLeft(Left<Either<C, B>, B> either) {
         return either.value;
     }
 
-    static <A, C> Either<A, C> joinRight(Left<A, Either<A, C>> either) {
+    public static <A, C> Either<A, C> joinRight(Left<A, Either<A, C>> either) {
         return either.withRight();
     }
 

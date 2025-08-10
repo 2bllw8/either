@@ -43,6 +43,7 @@ javadoc {
 
 compileJava {
     options.compilerArgs << "-Xlint:all,-serial"
+    options.release.set(8)
 }
 
 jar {

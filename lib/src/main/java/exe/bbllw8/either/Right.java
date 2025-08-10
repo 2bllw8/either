@@ -18,7 +18,7 @@ import java.util.stream.Stream;
  * @see Left
  * @since 2.0.0
  */
-public final class Right<A, B> implements Either<A, B> {
+public final class Right<A, B> extends Either<A, B> {
 
     private transient final B value;
 
@@ -124,9 +124,14 @@ public final class Right<A, B> implements Either<A, B> {
 
     @Override
     public boolean equals(Object o) {
-        return this == o
-                || (o instanceof Right<?, ?> other
-                && Objects.equals(value, other.value));
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Right)) {
+            return false;
+        }
+        final Right<?, ?> that = (Right<?, ?>) o;
+        return Objects.equals(value, that.value);
     }
 
     @Override
@@ -136,7 +141,7 @@ public final class Right<A, B> implements Either<A, B> {
 
     @Override
     public String toString() {
-        return "Right[" + value + "]";
+        return "Right(" + value + ")";
     }
 
     public static <A, B> Either<A, B> flatten(Right<A, Either<A, B>> either) {

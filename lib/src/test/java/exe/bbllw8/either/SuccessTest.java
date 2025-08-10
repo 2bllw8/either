@@ -175,7 +175,7 @@ public class SuccessTest {
     @Test
     public void stringRepresentation() {
         Assert.assertEquals("The string representation should match the documentation",
-                "Success[something]",
+                "Success(something)",
                 Try.from(() -> "something").toString());
     }
 }

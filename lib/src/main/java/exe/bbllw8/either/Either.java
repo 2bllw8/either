@@ -31,19 +31,37 @@ import java.util.stream.Stream;
  * @author 2bllw8
  * @since 1.0.0
  */
-public sealed interface Either<A, B> permits Left, Right {
+public abstract class Either<A, B> {
+
+    /**
+     * Default package-private constructor.
+     *
+     * <p>To instantiate this class use one of:
+     * <ul>
+     *     <li>{@link Left}</li>
+     *     <li>{@link Right}</li>
+     *     <li>{@link Either#from(boolean, Supplier, Supplier)}</li>
+     * </ul>
+     *
+     * @hidden
+     * @see Left
+     * @see Right
+     * @since 1.1.0
+     */
+    /* package */ Either() {
+    }
 
     /**
      * @return Returns true if this is a {@link Left}, false otherwise.
      * @since 1.0.0
      */
-    boolean isLeft();
+    public abstract boolean isLeft();
 
     /**
      * @return Returns true if this is a {@link Right}, false otherwise.
      * @since 1.0.0
      */
-    boolean isRight();
+    public abstract boolean isRight();
 
     /**
      * Returns true if this is a {@link Right} and its value is equal to elem (as determined by
@@ -53,14 +71,14 @@ public sealed interface Either<A, B> permits Left, Right {
      * @return <code>true</code> if this is a {@link Right} value equal to <code>elem</code>
      * @since 2.0.0
      */
-    boolean contains(B elem);
+    public abstract boolean contains(B elem);
 
     /**
      * @return Returns false if {@link Left} or returns the result of the application of the given
      * predicate to the {@link Right} value.
      * @since 2.0.0
      */
-    boolean exists(Function<B, Boolean> predicate);
+    public abstract boolean exists(Function<B, Boolean> predicate);
 
     /**
      * @return Returns {@link Right} with the existing value of {@link Right} if this is a
@@ -70,7 +88,7 @@ public sealed interface Either<A, B> permits Left, Right {
      * {@link Left} if this is a {@link Left}.
      * @since 2.0.0
      */
-    Either<A, B> filterOrElse(Function<B, Boolean> predicate, A fallback);
+    public abstract Either<A, B> filterOrElse(Function<B, Boolean> predicate, A fallback);
 
     /**
      * Binds the given function across {@link Right}.
@@ -78,7 +96,7 @@ public sealed interface Either<A, B> permits Left, Right {
      * @param function The function to bind across {@link Right}.
      * @since 2.0.0
      */
-    <B1> Either<A, B1> flatMap(Function<B, Either<A, B1>> function);
+    public abstract <B1> Either<A, B1> flatMap(Function<B, Either<A, B1>> function);
 
     /**
      * Applies functionLeft if this is a {@link Left} or functionRight if this is a {@link Right}.
@@ -86,21 +104,21 @@ public sealed interface Either<A, B> permits Left, Right {
      * @return Returns the results of applying the function.
      * @since 2.0.0
      */
-    <C> C fold(Function<A, C> functionLeft, Function<B, C> functionRight);
+    public abstract <C> C fold(Function<A, C> functionLeft, Function<B, C> functionRight);
 
     /**
      * @return Returns true if {@link Left} or returns the result of the application of the given
      * predicate to the {@link Right} value.
      * @since 2.0.0
      */
-    boolean forAll(Function<B, Boolean> predicate);
+    public abstract boolean forAll(Function<B, Boolean> predicate);
 
     /**
      * Executes the given side-effecting function if this is a {@link Right}.
      *
      * @since 2.0.0
      */
-    void forEach(Consumer<B> consumer);
+    public abstract void forEach(Consumer<B> consumer);
 
     /**
      * Executes a given side-effecting function depending on whether this is a {@link Left} or
@@ -108,27 +126,27 @@ public sealed interface Either<A, B> permits Left, Right {
      *
      * @since 2.1.0
      */
-    void forEach(Consumer<A> consumerLeft, Consumer<B> consumerRight);
+    public abstract void forEach(Consumer<A> consumerLeft, Consumer<B> consumerRight);
 
     /**
      * @return Returns the value from this {@link Right} or the given fallback if this is a
      * {@link Left}.
      * @since 2.0.0
      */
-    B getOrElse(B fallback);
+    public abstract B getOrElse(B fallback);
 
     /**
      * The given function is applied if this is a {@link Right}.
      *
      * @since 2.0.0
      */
-    <C> Either<A, C> map(Function<B, C> function);
+    public abstract <C> Either<A, C> map(Function<B, C> function);
 
     /**
      * @return Returns this {@link Right} or the given argument if this is a {@link Left}.
      * @since 2.0.0
      */
-    Either<A, B> orElse(Either<A, B> alternative);
+    public abstract Either<A, B> orElse(Either<A, B> alternative);
 
     /**
      * Allows for-comprehensions over the left side of Either instances, reversing the usual
@@ -137,28 +155,28 @@ public sealed interface Either<A, B> permits Left, Right {
      * @return Projects this Either as a {@link Left}.
      * @since 2.0.0
      */
-    LeftProjection<A, B> left();
+    public abstract LeftProjection<A, B> left();
 
     /**
      * @return Returns a stream containing the right value if this is a {@link Right}, otherwise,
      * {@link Stream#empty()}.
      * @since 2.0.0
      */
-    Stream<B> stream();
+    public abstract Stream<B> stream();
 
     /**
      * @return If this is a {@link Left}, then returns the left value in {@link Right} or vice
      * versa.
      * @since 1.0.0
      */
-    Either<B, A> swap();
+    public abstract Either<B, A> swap();
 
     /**
      * @return Returns a {@link Optional} with the right value if this is a {@link Right},
      * otherwise, {@link Optional#empty()}.
      * @since 2.0.0
      */
-    Optional<B> toOptional();
+    public abstract Optional<B> toOptional();
 
     /**
      * @return If the <code>conditional</code> is <code>true</code> returns a {@link Right} holding
@@ -166,9 +184,8 @@ public sealed interface Either<A, B> permits Left, Right {
      * supplied by the <code>ifFalse</code>
      * @since 3.4.0
      */
-    static <A, B> Either<A, B> from(boolean conditional,
-                                    Supplier<B> ifTrue,
-                                    Supplier<A> ifFalse) {
+    public static <A, B> Either<A, B> from(boolean conditional, Supplier<B> ifTrue,
+                                           Supplier<A> ifFalse) {
         return conditional
                 ? new Right<>(ifTrue.get())
                 : new Left<>(ifFalse.get());
@@ -179,11 +196,15 @@ public sealed interface Either<A, B> permits Left, Right {
      * {@link Left}.
      * @since 2.0.0
      */
-    static <A, B> Either<A, B> flatten(Either<A, Either<A, B>> either) {
-        return switch (either) {
-            case Left<A, Either<A, B>> l -> Left.flatten(l);
-            case Right<A, Either<A, B>> r -> Right.flatten(r);
-        };
+    public static <A, B> Either<A, B> flatten(Either<A, Either<A, B>> either) {
+        if (either instanceof Left<?, ?>) {
+            return Left.flatten((Left<A, Either<A, B>>) either);
+        } else if (either instanceof Right<?, ?>) {
+            return Right.flatten((Right<A, Either<A, B>>) either);
+        } else {
+            // Should never happen
+            throw new IllegalStateException();
+        }
     }
 
     /**
@@ -198,11 +219,15 @@ public sealed interface Either<A, B> permits Left, Right {
      *
      * @since 2.0.0
      */
-    static <B, C> Either<C, B> joinLeft(Either<Either<C, B>, B> either) {
-        return switch (either) {
-            case Left<Either<C, B>, B> l -> Left.joinLeft(l);
-            case Right<Either<C, B>, B> r -> Right.joinLeft(r);
-        };
+    public static <B, C> Either<C, B> joinLeft(Either<Either<C, B>, B> either) {
+        if (either instanceof Left<?, ?>) {
+            return Left.joinLeft((Left<Either<C, B>, B>) either);
+        } else if (either instanceof Right<?, ?>) {
+            return Right.joinLeft((Right<Either<C, B>, B>) either);
+        } else {
+            // Should never happen
+            throw new IllegalStateException();
+        }
     }
 
     /**
@@ -217,10 +242,14 @@ public sealed interface Either<A, B> permits Left, Right {
      *
      * @since 2.0.0
      */
-    static <A, C> Either<A, C> joinRight(Either<A, Either<A, C>> either) {
-        return switch (either) {
-            case Left<A, Either<A, C>> l -> Left.joinRight(l);
-            case Right<A, Either<A, C>> r -> Right.joinRight(r);
-        };
+    public static <A, C> Either<A, C> joinRight(Either<A, Either<A, C>> either) {
+        if (either instanceof Left<?, ?>) {
+            return Left.joinRight((Left<A, Either<A, C>>) either);
+        } else if (either instanceof Right<?, ?>) {
+            return Right.joinRight((Right<A, Either<A, C>>) either);
+        } else {
+            // Should never happen
+            throw new IllegalStateException();
+        }
     }
 }

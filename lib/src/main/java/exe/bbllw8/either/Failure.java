@@ -23,7 +23,7 @@ import java.util.stream.Stream;
  * @author 2bllw8
  * @since 3.0.0
  */
-public final class Failure<T> implements Try<T> {
+public final class Failure<T> extends Try<T> {
 
     private transient final Throwable throwable;
 
@@ -134,9 +134,14 @@ public final class Failure<T> implements Try<T> {
 
     @Override
     public boolean equals(Object o) {
-        return this == o
-                || (o instanceof Failure<?> that
-                && Objects.equals(throwable, that.throwable));
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Failure)) {
+            return false;
+        }
+        final Failure<?> that = (Failure<?>) o;
+        return Objects.equals(throwable, that.throwable);
     }
 
     @Override
@@ -146,17 +151,17 @@ public final class Failure<T> implements Try<T> {
 
     @Override
     public String toString() {
-        return "Failure[" + throwable + ']';
+        return "Failure(" + throwable + ')';
     }
 
     /**
      * Assert that the given throwable is not fatal.
      */
     private static void assertNotFatal(Throwable t) {
-        switch (t) {
-            case VirtualMachineError vme -> throw vme;
-            case LinkageError le -> throw le;
-            default -> { /* Do nothing */ }
+        if (t instanceof VirtualMachineError) {
+            throw (VirtualMachineError) t;
+        } else if (t instanceof LinkageError) {
+            throw (LinkageError) t;
         }
     }
 }

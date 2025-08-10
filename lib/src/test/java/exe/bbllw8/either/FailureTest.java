@@ -5,7 +5,6 @@
 package exe.bbllw8.either;
 
 import java.util.Optional;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -166,8 +165,8 @@ public class FailureTest {
     @Test
     public void stream() {
         Assert.assertEquals("Stream is empty",
-                new Failure<>(new Throwable()).stream().count(),
-                0);
+                0,
+                new Failure<>(new Throwable()).stream().count());
     }
 
     @SuppressWarnings({
@@ -201,7 +200,7 @@ public class FailureTest {
     @Test
     public void stringRepresentation() {
         Assert.assertEquals("The string representation should match the documentation",
-                "Failure[java.lang.IllegalStateException: something]",
+                "Failure(java.lang.IllegalStateException: something)",
                 Try.from(() -> {
                     throw new IllegalStateException("something");
                 }).toString());
@@ -226,14 +225,16 @@ public class FailureTest {
     private static class IntToBoolean {
 
         boolean convert(int result) throws IllegalAccessException, IllegalArgumentException {
-            return switch (result) {
-                case 0 -> false;
-                case 1 -> true;
-                // You have no authority to discover the dark truth about
-                // the third hidden boolean value
-                case 2 -> throw new IllegalAccessException();
-                default -> throw new IllegalArgumentException();
-            };
+            switch (result) {
+                case 0:
+                    return false;
+                case 1:
+                    return true;
+                case 2:
+                    throw new IllegalAccessException();
+                default:
+                    throw new IllegalArgumentException();
+            }
         }
     }
 }
